@@ -1,14 +1,16 @@
-﻿using Flurl;
-using QuickBooksSharp.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Flurl;
+using QuickBooksSharp.Entities;
+using QuickBooksSharp.Infrastructure;
+using QuickBooksSharp.Policies;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Services
 {
     public class DataService : IDataService
     {
@@ -65,10 +67,51 @@ namespace QuickBooksSharp
             };
         }
 
+        public async Task<IntuitResponse<QueryResponse<TEntity>>> QueryWithCustomFieldsAsync<TEntity>(string query) where TEntity : IntuitEntity
+        {
+            var res = await _client.GetAsync<IntuitResponse>(new Url(_serviceUrl).AppendPathSegment("query")
+                                                                                 .SetQueryParam("query", query)
+                                                                                 .SetQueryParam("include", "enhancedAllCustomFields"));
+            var queryRes = res.QueryResponse;
+            return new IntuitResponse<QueryResponse<TEntity>>
+            {
+                RequestId = res.requestId,
+                Time = res.time,
+                Status = res.status,
+                Warnings = res.Warnings,
+                Fault = res.Fault,
+                Response = new QueryResponse<TEntity>
+                {
+                    MaxResults = queryRes?.maxResults,
+                    StartPosition = queryRes?.startPosition,
+                    TotalCount = queryRes?.totalCount,
+                    Warnings = queryRes?.Warnings,
+                    Fault = queryRes?.Fault,
+                    Entities = queryRes?.IntuitObjects?.Cast<TEntity>().ToArray()
+                }
+            };
+        }
+
         public async Task<IntuitResponse<TEntity>> GetAsync<TEntity>(string id) where TEntity : IntuitEntity
         {
             var res = await _client.GetAsync<IntuitResponse>(new Url(_serviceUrl).AppendPathSegment(GetEntityName(typeof(TEntity)))
                                                                                  .AppendPathSegment(id));
+            return new IntuitResponse<TEntity>
+            {
+                RequestId = res.requestId,
+                Time = res.time,
+                Status = res.status,
+                Warnings = res.Warnings,
+                Fault = res.Fault,
+                Response = (TEntity?)res.IntuitObject
+            };
+        }
+
+        public async Task<IntuitResponse<TEntity>> GetWithCustomFieldsAsync<TEntity>(string id) where TEntity : IntuitEntity
+        {
+            var res = await _client.GetAsync<IntuitResponse>(new Url(_serviceUrl).AppendPathSegment(GetEntityName(typeof(TEntity)))
+                                                                                 .AppendPathSegment(id)
+                                                                                 .SetQueryParam("include", "enhancedAllCustomFields"));
             return new IntuitResponse<TEntity>
             {
                 RequestId = res.requestId,

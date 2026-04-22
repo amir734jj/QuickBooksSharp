@@ -1,9 +1,9 @@
-﻿using Flurl;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Flurl;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Infrastructure
 {
     public interface IQuickBooksHttpClient
     {

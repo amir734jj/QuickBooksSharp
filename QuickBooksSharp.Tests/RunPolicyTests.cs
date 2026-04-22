@@ -2,6 +2,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.Entities;
 using System.Linq;
 using System.Threading.Tasks;
+using QuickBooksSharp.Infrastructure;
+using QuickBooksSharp.Policies;
+using QuickBooksSharp.Services;
 
 namespace QuickBooksSharp.Tests
 {

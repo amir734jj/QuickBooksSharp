@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Text.Json;
+using QuickBooksSharp.Infrastructure;
+using QuickBooksSharp.Webhooks;
 
 namespace QuickBooksSharp.Tests
 {

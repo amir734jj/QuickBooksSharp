@@ -1,5 +1,4 @@
-﻿using Flurl;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,8 +7,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Flurl;
+using QuickBooksSharp.Policies;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Infrastructure
 {
     public class QuickBooksHttpClient : IQuickBooksHttpClient
     {

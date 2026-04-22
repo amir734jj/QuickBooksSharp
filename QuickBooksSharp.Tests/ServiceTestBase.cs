@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using QuickBooksSharp.Authentication;
 
 namespace QuickBooksSharp.Tests
 {

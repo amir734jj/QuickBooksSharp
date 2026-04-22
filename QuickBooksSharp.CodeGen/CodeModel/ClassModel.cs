@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace QuickBooksSharp.CodeGen
+﻿namespace QuickBooksSharp.CodeGen.CodeModel
 {
     public class ClassModel
     {

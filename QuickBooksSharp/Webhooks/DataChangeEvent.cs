@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Webhooks
 {
     public class DataChangeEvent
     {

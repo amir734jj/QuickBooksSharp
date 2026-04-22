@@ -1,8 +1,8 @@
-﻿using QuickBooksSharp.Entities;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
+using QuickBooksSharp.Entities;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Webhooks
 {
     /// <summary>
     /// Information about the entity that changed (customer, Invoice, etc.)

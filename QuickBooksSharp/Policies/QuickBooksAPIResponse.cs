@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
+using QuickBooksSharp.Infrastructure;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Policies
 {
     public class QuickBooksAPIResponse
     {

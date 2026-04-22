@@ -1,6 +1,6 @@
 ﻿using Flurl;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Infrastructure
 {
     /// <summary>
     /// Creates the BaseUrl for QuickBooks Online API

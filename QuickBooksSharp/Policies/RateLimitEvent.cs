@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Policies
 {
     public class RateLimitEvent
     {

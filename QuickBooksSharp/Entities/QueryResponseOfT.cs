@@ -1,6 +1,4 @@
-﻿using QuickBooksSharp.Entities;
-
-namespace QuickBooksSharp
+﻿namespace QuickBooksSharp.Entities
 {
     public class QueryResponse<TEntity> where TEntity : IntuitEntity
     {

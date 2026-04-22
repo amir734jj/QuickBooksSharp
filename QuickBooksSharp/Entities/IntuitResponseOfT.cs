@@ -1,7 +1,6 @@
-﻿using QuickBooksSharp.Entities;
-using System;
+﻿using System;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Entities
 {
     public class IntuitResponse<TResponse> where TResponse : class
     {

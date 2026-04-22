@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Webhooks
 {
     /// <summary>
     /// Webhooks are designed to handle updates for multiple QuickBooks Online companies (specified by the realm ID).

@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Policies
 {
     public static class RunPolicy
     {

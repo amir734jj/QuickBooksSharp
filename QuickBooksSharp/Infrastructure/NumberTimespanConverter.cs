@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Infrastructure
 {
     public class NumberTimespanConverter : JsonConverter<TimeSpan>
     {

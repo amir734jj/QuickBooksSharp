@@ -1,4 +1,4 @@
-﻿namespace QuickBooksSharp
+﻿namespace QuickBooksSharp.Authentication
 {
     public class TokenRequest
     {

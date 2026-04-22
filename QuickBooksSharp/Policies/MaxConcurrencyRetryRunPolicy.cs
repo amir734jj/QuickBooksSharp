@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Policies
 {
     public class MaxConcurrencyRetryRunPolicy : IRunPolicy
     {

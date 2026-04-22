@@ -1,12 +1,14 @@
-﻿using Flurl;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Flurl;
+using QuickBooksSharp.Infrastructure;
+using QuickBooksSharp.Policies;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {

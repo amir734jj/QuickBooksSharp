@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Infrastructure
 {
     public class QuickBooksException : Exception
     {

@@ -1,4 +1,4 @@
-﻿namespace QuickBooksSharp.CodeGen
+﻿namespace QuickBooksSharp.CodeGen.CodeModel
 {
     public class PropertyModel
     {

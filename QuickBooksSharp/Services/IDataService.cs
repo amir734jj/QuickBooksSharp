@@ -1,10 +1,10 @@
-﻿using QuickBooksSharp.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using QuickBooksSharp.Entities;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Services
 {
     public interface IDataService
     {
@@ -25,6 +25,20 @@ namespace QuickBooksSharp
         Task<IntuitResponse<TEntity>> PostAsync<TEntity>(TEntity e, OperationEnum? operation = null, OperationEnum? include = null) where TEntity : IntuitEntity;
 
         Task<IntuitResponse<QueryResponse<TEntity>>> QueryAsync<TEntity>(string query) where TEntity : IntuitEntity;
+
+        /// <summary>
+        /// Query entities with enhanced custom fields support (returns more than 3 custom fields).
+        /// Adds the "include=enhancedAllCustomFields" query parameter.
+        /// Requires the Custom Fields Premium API scope: app-foundations.custom-field-definitions.read
+        /// </summary>
+        Task<IntuitResponse<QueryResponse<TEntity>>> QueryWithCustomFieldsAsync<TEntity>(string query) where TEntity : IntuitEntity;
+
+        /// <summary>
+        /// Get a single entity with enhanced custom fields support (returns more than 3 custom fields).
+        /// Adds the "include=enhancedAllCustomFields" query parameter.
+        /// Requires the Custom Fields Premium API scope: app-foundations.custom-field-definitions.read
+        /// </summary>
+        Task<IntuitResponse<TEntity>> GetWithCustomFieldsAsync<TEntity>(string id) where TEntity : IntuitEntity;
 
         /// <summary>
         /// Get an invoice as PDF

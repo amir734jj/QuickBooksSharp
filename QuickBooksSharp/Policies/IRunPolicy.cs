@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace QuickBooksSharp
+namespace QuickBooksSharp.Policies
 {
     public interface IRunPolicy
     {

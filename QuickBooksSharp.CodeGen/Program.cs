@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Schema;
+using QuickBooksSharp.CodeGen.CodeModel;
+using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.CodeGen
 {

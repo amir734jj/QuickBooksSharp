@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
