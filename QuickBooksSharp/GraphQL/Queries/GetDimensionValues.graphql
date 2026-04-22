@@ -1,0 +1,19 @@
+query GetDimensionValues($filters: AppFoundations_ActiveCustomDimensionValuesFilterBy!, $first: Int, $after: String) {
+  appFoundationsActiveCustomDimensionValues(filters: $filters, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        value
+        active
+        entityVersion
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

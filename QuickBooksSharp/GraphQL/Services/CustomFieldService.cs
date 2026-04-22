@@ -25,26 +25,6 @@ namespace QuickBooksSharp.GraphQL.Services
 
     public class CustomFieldService : ICustomFieldService
     {
-        private const string DefaultCustomFieldFields = @"
-            id
-            legacyID
-            legacyIDV2
-            label
-            dataType
-            active
-            required
-            entityVersion
-            associations {
-                entityType
-                allowedOperations
-                condition
-            }
-            dropDownOptions {
-                id
-                value
-                active
-            }";
-
         private readonly GraphQLClient _client;
 
         public CustomFieldService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
@@ -52,50 +32,21 @@ namespace QuickBooksSharp.GraphQL.Services
             _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
         }
 
-        public async Task<GraphQLResponse<CustomFieldDefinitionsQueryData>> GetCustomFieldDefinitionsAsync(int? first = null, string? after = null, CustomFieldDefinitionsFilter? filters = null, string? fields = null)
+        public async Task<GraphQLResponse<CustomFieldDefinitionsQueryData>> GetCustomFieldDefinitionsAsync(int? first = null, string? after = null, CustomFieldDefinitionsFilter? filters = null, string? customQuery = null)
         {
-            var query = $@"
-                query GetCustomFieldDefinitions($first: Int, $after: String, $filters: AppFoundations_CustomExtensionsDefinitionFilterBy) {{
-                    appFoundationsCustomFieldDefinitions(first: $first, after: $after, filters: $filters) {{
-                        edges {{
-                            node {{
-                                {fields ?? DefaultCustomFieldFields}
-                            }}
-                            cursor
-                        }}
-                        pageInfo {{
-                            hasNextPage
-                            hasPreviousPage
-                            startCursor
-                            endCursor
-                        }}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("GetCustomFieldDefinitions");
             return await _client.SendQueryAsync<CustomFieldDefinitionsQueryData>(query, new { first, after, filters }, "GetCustomFieldDefinitions");
         }
 
-        public async Task<GraphQLResponse<CreateCustomFieldDefinitionData>> CreateCustomFieldDefinitionAsync(CustomFieldDefinitionCreateInput input, string? fields = null)
+        public async Task<GraphQLResponse<CreateCustomFieldDefinitionData>> CreateCustomFieldDefinitionAsync(CustomFieldDefinitionCreateInput input, string? customQuery = null)
         {
-            var query = $@"
-                mutation CreateCustomFieldDefinition($input: AppFoundations_CustomFieldDefinitionCreateInput!) {{
-                    appFoundationsCreateCustomFieldDefinition(input: $input) {{
-                        {fields ?? DefaultCustomFieldFields}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("CreateCustomFieldDefinition");
             return await _client.SendMutationAsync<CreateCustomFieldDefinitionData>(query, new { input }, "CreateCustomFieldDefinition");
         }
 
-        public async Task<GraphQLResponse<UpdateCustomFieldDefinitionData>> UpdateCustomFieldDefinitionAsync(CustomFieldDefinitionUpdateInput input, string? fields = null)
+        public async Task<GraphQLResponse<UpdateCustomFieldDefinitionData>> UpdateCustomFieldDefinitionAsync(CustomFieldDefinitionUpdateInput input, string? customQuery = null)
         {
-            var query = $@"
-                mutation UpdateCustomFieldDefinition($input: AppFoundations_CustomFieldDefinitionUpdateInput!) {{
-                    appFoundationsUpdateCustomFieldDefinition(input: $input) {{
-                        {fields ?? DefaultCustomFieldFields}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("UpdateCustomFieldDefinition");
             return await _client.SendMutationAsync<UpdateCustomFieldDefinitionData>(query, new { input }, "UpdateCustomFieldDefinition");
         }
     }

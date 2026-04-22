@@ -1,0 +1,32 @@
+query GetProjects($first: PositiveInt!, $after: String, $filter: ProjectManagement_ProjectFilter, $orderBy: [ProjectManagement_OrderBy]) {
+  projectManagementProjects(first: $first, after: $after, filter: $filter, orderBy: $orderBy) {
+    edges {
+      node {
+        id
+        name
+        description
+        status
+        version
+        startDate
+        dueDate
+        completedDate
+        completionRate
+        deleted
+        pinned
+        priority
+        type
+        customer {
+          id
+          displayName
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

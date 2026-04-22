@@ -1,0 +1,53 @@
+query GetEmployeeCompensations($filter: Payroll_EmployeeCompensationsFilter!, $first: Int, $after: String) {
+  payrollEmployeeCompensations(filter: $filter, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        employeeId
+        active
+        employerCompensation {
+          id
+          name
+          active
+          type {
+            value
+          }
+        }
+        rate {
+          amount {
+            amount
+            currencyCode
+          }
+          payUnit
+        }
+      }
+      cursor
+    }
+    nodes {
+      id
+      employeeId
+      active
+      employerCompensation {
+        id
+        name
+        active
+        type {
+          value
+        }
+      }
+      rate {
+        amount {
+          amount
+          currencyCode
+        }
+        payUnit
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

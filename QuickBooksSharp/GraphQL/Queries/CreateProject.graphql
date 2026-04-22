@@ -1,0 +1,27 @@
+mutation CreateProject($input: ProjectManagement_CreateProjectInput!) {
+  projectManagementCreateProject(input: $input) {
+    ... on ProjectManagement_Project {
+      id
+      name
+      description
+      status
+      version
+      startDate
+      dueDate
+      completedDate
+      completionRate
+      deleted
+      pinned
+      priority
+      type
+      customer {
+        id
+        displayName
+      }
+    }
+    ... on ProjectManagement_Error {
+      message
+      classification
+    }
+  }
+}

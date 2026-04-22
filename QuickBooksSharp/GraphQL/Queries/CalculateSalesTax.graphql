@@ -1,0 +1,80 @@
+mutation CalculateSalesTax($input: IndirectTax_TaxCalculationInput!) {
+  indirectTaxCalculateSaleTransactionTax(input: $input) {
+    ... on IndirectTax_TaxCalculationPayload {
+      taxCalculation {
+        transactionDate
+        shipping {
+          shipFromAddress {
+            streetAddressLine1
+          }
+          shipToAddress {
+            streetAddressLine1
+          }
+          shippingFee {
+            value
+          }
+          taxAmount {
+            value
+          }
+        }
+        lineItems {
+          nodes {
+            numberOfUnits
+            totalPriceExcludingTaxes {
+              value
+            }
+            taxAmount {
+              value
+            }
+            productVariantTaxability {
+              classificationCode
+            }
+            taxDetails {
+              taxAmount {
+                value
+              }
+              taxableAmount {
+                value
+              }
+              ratePercentageApplied {
+                ... on IndirectTax_RatePercentage {
+                  rate
+                }
+              }
+              taxRate {
+                name
+                taxRate {
+                  taxRateReferenceId
+                }
+              }
+            }
+          }
+        }
+        taxTotals {
+          totalTaxAmountExcludingShipping {
+            value
+          }
+          aggregatedTaxesExcludingShippingByRate {
+            taxableAmount {
+              value
+            }
+            taxAmount {
+              value
+            }
+            ratePercentageApplied {
+              ... on IndirectTax_RatePercentage {
+                rate
+              }
+            }
+            taxRate {
+              name
+              taxRate {
+                taxRateReferenceId
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

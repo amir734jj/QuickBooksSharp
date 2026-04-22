@@ -1,0 +1,22 @@
+mutation UpdateCustomFieldDefinition($input: AppFoundations_CustomFieldDefinitionUpdateInput!) {
+  appFoundationsUpdateCustomFieldDefinition(input: $input) {
+    id
+    legacyID
+    legacyIDV2
+    label
+    dataType
+    active
+    required
+    entityVersion
+    associations {
+      entityType
+      allowedOperations
+      condition
+    }
+    dropDownOptions {
+      id
+      value
+      active
+    }
+  }
+}

@@ -67,25 +67,6 @@ namespace QuickBooksSharp.GraphQL.Services
 
     public class ProjectService : IProjectService
     {
-        private const string DefaultProjectFields = @"
-            id
-            name
-            description
-            status
-            version
-            startDate
-            dueDate
-            completedDate
-            completionRate
-            deleted
-            pinned
-            priority
-            type
-            customer {
-                id
-                displayName
-            }";
-
         private readonly GraphQLClient _client;
 
         public ProjectService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
@@ -93,95 +74,33 @@ namespace QuickBooksSharp.GraphQL.Services
             _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
         }
 
-        public async Task<GraphQLResponse<ProjectQueryData>> GetProjectAsync(string id, string? fields = null)
+        public async Task<GraphQLResponse<ProjectQueryData>> GetProjectAsync(string id, string? customQuery = null)
         {
-            var query = $@"
-                query GetProject($id: ID!) {{
-                    projectManagementProject(id: $id) {{
-                        {fields ?? DefaultProjectFields}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("GetProject");
             return await _client.SendQueryAsync<ProjectQueryData>(query, new { id }, "GetProject");
         }
 
-        public async Task<GraphQLResponse<ProjectsQueryData>> GetProjectsAsync(int first, string? after = null, ProjectFilter? filter = null, ProjectOrderBy[]? orderBy = null, string? fields = null)
+        public async Task<GraphQLResponse<ProjectsQueryData>> GetProjectsAsync(int first, string? after = null, ProjectFilter? filter = null, ProjectOrderBy[]? orderBy = null, string? customQuery = null)
         {
-            var query = $@"
-                query GetProjects($first: PositiveInt!, $after: String, $filter: ProjectManagement_ProjectFilter, $orderBy: [ProjectManagement_OrderBy]) {{
-                    projectManagementProjects(first: $first, after: $after, filter: $filter, orderBy: $orderBy) {{
-                        edges {{
-                            node {{
-                                {fields ?? DefaultProjectFields}
-                            }}
-                            cursor
-                        }}
-                        pageInfo {{
-                            hasNextPage
-                            hasPreviousPage
-                            startCursor
-                            endCursor
-                        }}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("GetProjects");
             return await _client.SendQueryAsync<ProjectsQueryData>(query, new { first, after, filter, orderBy }, "GetProjects");
         }
 
-        public async Task<GraphQLResponse<CreateProjectData>> CreateProjectAsync(CreateProjectInput input, string? fields = null)
+        public async Task<GraphQLResponse<CreateProjectData>> CreateProjectAsync(CreateProjectInput input, string? customQuery = null)
         {
-            var selectedFields = fields ?? DefaultProjectFields;
-            var query = $@"
-                mutation CreateProject($input: ProjectManagement_CreateProjectInput!) {{
-                    projectManagementCreateProject(input: $input) {{
-                        ... on ProjectManagement_Project {{
-                            {selectedFields}
-                        }}
-                        ... on ProjectManagement_Error {{
-                            message
-                            classification
-                        }}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("CreateProject");
             return await _client.SendMutationAsync<CreateProjectData>(query, new { input }, "CreateProject");
         }
 
-        public async Task<GraphQLResponse<UpdateProjectData>> UpdateProjectAsync(UpdateProjectInput input, string? fields = null)
+        public async Task<GraphQLResponse<UpdateProjectData>> UpdateProjectAsync(UpdateProjectInput input, string? customQuery = null)
         {
-            var selectedFields = fields ?? DefaultProjectFields;
-            var query = $@"
-                mutation UpdateProject($input: ProjectManagement_UpdateProjectInput!) {{
-                    projectManagementUpdateProject(input: $input) {{
-                        ... on ProjectManagement_Project {{
-                            {selectedFields}
-                        }}
-                        ... on ProjectManagement_Error {{
-                            message
-                            classification
-                        }}
-                    }}
-                }}";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("UpdateProject");
             return await _client.SendMutationAsync<UpdateProjectData>(query, new { input }, "UpdateProject");
         }
 
-        public async Task<GraphQLResponse<DeleteProjectData>> DeleteProjectAsync(DeleteProjectInput input)
+        public async Task<GraphQLResponse<DeleteProjectData>> DeleteProjectAsync(DeleteProjectInput input, string? customQuery = null)
         {
-            var query = @"
-                mutation DeleteProject($input: ProjectManagement_DeleteProjectInput!) {
-                    projectManagementDeleteProject(input: $input) {
-                        ... on ProjectManagement_Project {
-                            id
-                            deleted
-                        }
-                        ... on ProjectManagement_Error {
-                            message
-                            classification
-                        }
-                    }
-                }";
-
+            var query = customQuery ?? GraphQLQueryLoader.Load("DeleteProject");
             return await _client.SendMutationAsync<DeleteProjectData>(query, new { input }, "DeleteProject");
         }
     }

@@ -1,0 +1,8 @@
+mutation DisableDimensionValue($input: AppFoundations_CustomDimensionValueDisableInput!) {
+  appFoundationsCommonDisableCustomDimensionValue(input: $input) {
+    id
+    value
+    active
+    entityVersion
+  }
+}

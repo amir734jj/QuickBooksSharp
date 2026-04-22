@@ -1,0 +1,33 @@
+query GetCustomFieldDefinitions($first: Int, $after: String, $filters: AppFoundations_CustomExtensionsDefinitionFilterBy) {
+  appFoundationsCustomFieldDefinitions(first: $first, after: $after, filters: $filters) {
+    edges {
+      node {
+        id
+        legacyID
+        legacyIDV2
+        label
+        dataType
+        active
+        required
+        entityVersion
+        associations {
+          entityType
+          allowedOperations
+          condition
+        }
+        dropDownOptions {
+          id
+          value
+          active
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

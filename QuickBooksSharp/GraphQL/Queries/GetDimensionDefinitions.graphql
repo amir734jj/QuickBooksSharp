@@ -1,0 +1,29 @@
+query GetDimensionDefinitions($first: Int, $after: String, $filters: AppFoundations_ActiveCustomDimensionDefinitionFilterBy) {
+  appFoundationsActiveCustomDimensionDefinitions(first: $first, after: $after, filters: $filters) {
+    edges {
+      node {
+        id
+        label
+        dataType
+        active
+        required
+        associations {
+          entityType
+          allowedOperations
+          condition
+        }
+        sharedInfo {
+          name
+          description
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}

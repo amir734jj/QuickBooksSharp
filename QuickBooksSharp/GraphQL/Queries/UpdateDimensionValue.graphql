@@ -1,0 +1,8 @@
+mutation UpdateDimensionValue($input: AppFoundations_CustomDimensionValueUpdateInput!) {
+  appFoundationsCommonUpdateCustomDimensionValue(input: $input) {
+    id
+    value
+    active
+    entityVersion
+  }
+}
