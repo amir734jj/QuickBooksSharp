@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "QuickBooksSharp.Console": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "QUICKBOOKS_SHARP_CLIENT_ID": "",
+        "QUICKBOOKS_SHARP_CLIENT_SECRET": "",
+        "QUICKBOOKS_SHARP_REFRESH_TOKEN": "",
+        "QUICKBOOKS_SHARP_REALMID": ""
+      }
+    }
+  }
+}
