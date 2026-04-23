@@ -12,12 +12,8 @@ using QuickBooksSharp.Policies;
 
 namespace QuickBooksSharp.Infrastructure
 {
-    public class QuickBooksHttpClient : IQuickBooksHttpClient
+    public class QuickBooksHttpClient(string? accessToken, long? realmId, IRunPolicy runPolicy) : IQuickBooksHttpClient
     {
-        private readonly string? _accessToken;
-        private readonly long? _realmId;
-        private IRunPolicy _runPolicy;
-
         private static HttpClient _httpClient = new(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip
@@ -44,13 +40,6 @@ namespace QuickBooksSharp.Infrastructure
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public QuickBooksHttpClient(string? accessToken, long? realmId, IRunPolicy runPolicy)
-        {
-            _accessToken = accessToken;
-            _realmId = realmId;
-            _runPolicy = runPolicy;
-        }
-
         public async Task<TResponse> GetAsync<TResponse>(Url url)
         {
             Func<HttpRequestMessage> makeRequest = () => new HttpRequestMessage(HttpMethod.Get, url);
@@ -74,12 +63,12 @@ namespace QuickBooksSharp.Infrastructure
 
         public async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> makeRequest)
         {
-            var response = await this._runPolicy.RunAsync(_realmId, async () =>
+            var response = await runPolicy.RunAsync(realmId, async () =>
             {
                 using var request = makeRequest();
-                if (_accessToken != null)
+                if (accessToken != null)
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 }
 
                 var response = await _httpClient.SendAsync(request);
@@ -87,7 +76,7 @@ namespace QuickBooksSharp.Infrastructure
 
                 if (ex?.IsRateLimit == true)
                 {
-                    RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri));
+                    RunPolicy.NotifyRateLimt(new RateLimitEvent(realmId, request.RequestUri));
                 }
 
                 return new QuickBooksAPIResponse(response, ex);

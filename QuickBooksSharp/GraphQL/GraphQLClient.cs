@@ -11,13 +11,17 @@ using QuickBooksSharp.Policies;
 
 namespace QuickBooksSharp.GraphQL
 {
-    public class GraphQLClient : IGraphQLClient
+    public class GraphQLClient(
+        string accessToken,
+        long? realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : IGraphQLClient
     {
-        private readonly string _accessToken;
-        private readonly long? _realmId;
-        private readonly string _endpoint;
-        private readonly IRunPolicy _runPolicy;
-        private readonly ILogger _logger;
+        private readonly string _endpoint = GraphQLUrl.GetEndpoint(useSandbox);
+        private readonly IRunPolicy _runPolicy = runPolicy ?? RunPolicy.DefaultRunPolicy;
+        private readonly ILogger _logger = logger ?? NullLogger.Instance;
 
         public static readonly JsonSerializerSettings JsonSettings = new()
         {
@@ -36,15 +40,6 @@ namespace QuickBooksSharp.GraphQL
             _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("(github.com/better-reports/QuickBooksSharp)"));
             _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        public GraphQLClient(string accessToken, long? realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _accessToken = accessToken;
-            _realmId = realmId;
-            _endpoint = GraphQLUrl.GetEndpoint(useSandbox);
-            _runPolicy = runPolicy ?? RunPolicy.DefaultRunPolicy;
-            _logger = logger ?? NullLogger.Instance;
         }
 
         public Task<GraphQLResponse<TData>> SendQueryAsync<TData>(string query, object? variables = null, string? operationName = null) where TData : class
@@ -70,19 +65,19 @@ namespace QuickBooksSharp.GraphQL
 
             _logger.LogDebug("GraphQL {Operation} to {Endpoint}", operationName ?? "(unnamed)", _endpoint);
 
-            var response = await _runPolicy.RunAsync(_realmId, async () =>
+            var response = await _runPolicy.RunAsync(realmId, async () =>
             {
                 using var request = new HttpRequestMessage(HttpMethod.Post, _endpoint);
                 request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 var httpResponse = await _httpClient.SendAsync(request);
                 var ex = httpResponse.IsSuccessStatusCode ? null : new QuickBooksException(request, httpResponse, await httpResponse.Content.ReadAsStringAsync());
 
                 if (ex?.IsRateLimit == true)
                 {
-                    _logger.LogWarning("Rate limit hit for realm {RealmId} on {Uri}", _realmId, request.RequestUri);
-                    RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri!));
+                    _logger.LogWarning("Rate limit hit for realm {RealmId} on {Uri}", realmId, request.RequestUri);
+                    RunPolicy.NotifyRateLimt(new RateLimitEvent(realmId, request.RequestUri!));
                 }
                 else if (ex != null)
                 {

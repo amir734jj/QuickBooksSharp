@@ -12,14 +12,15 @@ namespace QuickBooksSharp.GraphQL.Services
         public EmployeeCompensationConnection? EmployeeCompensations { get; set; }
     }
 
-    public class PayrollCompensationService : IPayrollCompensationService
+    public class PayrollCompensationService(
+        string accessToken,
+        long realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : IPayrollCompensationService
     {
-        private readonly GraphQLClient _client;
-
-        public PayrollCompensationService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
-        }
+        private readonly GraphQLClient _client = new(accessToken, realmId, useSandbox, runPolicy, logger);
 
         public async Task<GraphQLResponse<EmployeeCompensationsQueryData>> GetEmployeeCompensationsAsync(EmployeeCompensationsFilter filter, int? first = null, string? after = null, string? customQuery = null)
         {

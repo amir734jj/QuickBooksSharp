@@ -18,14 +18,15 @@ namespace QuickBooksSharp.GraphQL.Services
         public SalesTaxCalculation? TaxCalculation { get; set; }
     }
 
-    public class SalesTaxService : ISalesTaxService
+    public class SalesTaxService(
+        string accessToken,
+        long realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : ISalesTaxService
     {
-        private readonly GraphQLClient _client;
-
-        public SalesTaxService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
-        }
+        private readonly GraphQLClient _client = new(accessToken, realmId, useSandbox, runPolicy, logger);
 
         public async Task<GraphQLResponse<CalculateSalesTaxData>> CalculateSalesTaxAsync(SalesTaxCalculationInput input, string? customQuery = null)
         {

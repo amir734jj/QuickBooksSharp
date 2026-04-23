@@ -36,14 +36,15 @@ namespace QuickBooksSharp.GraphQL.Services
         public DimensionValue? DimensionValue { get; set; }
     }
 
-    public class DimensionService : IDimensionService
+    public class DimensionService(
+        string accessToken,
+        long realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : IDimensionService
     {
-        private readonly GraphQLClient _client;
-
-        public DimensionService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
-        }
+        private readonly GraphQLClient _client = new(accessToken, realmId, useSandbox, runPolicy, logger);
 
         public async Task<GraphQLResponse<DimensionDefinitionsQueryData>> GetDimensionDefinitionsAsync(int? first = null, string? after = null, DimensionDefinitionsFilter? filters = null, string? customQuery = null)
         {

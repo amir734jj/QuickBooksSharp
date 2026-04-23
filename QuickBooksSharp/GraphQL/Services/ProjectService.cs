@@ -60,14 +60,15 @@ namespace QuickBooksSharp.GraphQL.Services
         public bool IsError => ErrorMessage != null;
     }
 
-    public class ProjectService : IProjectService
+    public class ProjectService(
+        string accessToken,
+        long realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : IProjectService
     {
-        private readonly GraphQLClient _client;
-
-        public ProjectService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
-        }
+        private readonly GraphQLClient _client = new(accessToken, realmId, useSandbox, runPolicy, logger);
 
         public async Task<GraphQLResponse<ProjectQueryData>> GetProjectAsync(string id, string? customQuery = null)
         {

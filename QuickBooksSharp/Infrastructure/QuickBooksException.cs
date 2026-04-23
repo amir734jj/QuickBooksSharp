@@ -4,13 +4,17 @@ using System.Net.Http;
 
 namespace QuickBooksSharp.Infrastructure
 {
-    public class QuickBooksException : Exception
+    public class QuickBooksException(HttpRequestMessage request, HttpResponseMessage response, string responseContent)
+        : Exception($@"QuickBooks API call to {request.RequestUri} failed with code: {response.StatusCode}
+IntuiTId: {GetHeaderValue(response, "intuit_tid")},
+Reason: {response.ReasonPhrase}
+Content: {responseContent}")
     {
-        public HttpRequestMessage Request { get; }
+        public HttpRequestMessage Request { get; } = request;
 
-        public HttpResponseMessage Response { get; }
+        public HttpResponseMessage Response { get; } = response;
 
-        public string ResponseContent { get; }
+        public string ResponseContent { get; } = responseContent;
 
         /// <summary>
         /// HTTP 401
@@ -36,16 +40,5 @@ namespace QuickBooksSharp.Infrastructure
         public string? ErrorCause => GetHeaderValue(Response, "ErrorCause");
 
         private static string? GetHeaderValue(HttpResponseMessage r, string headerName) => r.Headers.TryGetValues(headerName, out var values) ? values.FirstOrDefault() : null;
-
-        public QuickBooksException(HttpRequestMessage request, HttpResponseMessage response, string responseContent)
-            : base($@"QuickBooks API call to {request.RequestUri} failed with code: {response.StatusCode}
-IntuiTId: {GetHeaderValue(response, "intuit_tid")},
-Reason: {response.ReasonPhrase}
-Content: {responseContent}")
-        {
-            this.Request = request;
-            this.Response = response;
-            this.ResponseContent = responseContent;
-        }
     }
 }

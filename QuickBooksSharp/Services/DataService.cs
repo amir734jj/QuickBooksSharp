@@ -12,17 +12,12 @@ using QuickBooksSharp.Policies;
 
 namespace QuickBooksSharp.Services
 {
-    public class DataService : IDataService
+    public class DataService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        : IDataService
     {
-        protected readonly QuickBooksHttpClient _client;
+        private readonly QuickBooksHttpClient _client = new(accessToken, realmId, runPolicy ?? RunPolicy.DefaultRunPolicy);
 
-        protected readonly Url _serviceUrl;
-
-        public DataService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
-        {
-            _client = new QuickBooksHttpClient(accessToken, realmId, runPolicy ?? RunPolicy.DefaultRunPolicy);
-            _serviceUrl = QuickBooksUrl.Build(useSandbox, realmId);
-        }
+        private readonly Url _serviceUrl = QuickBooksUrl.Build(useSandbox, realmId);
 
         public async Task<IntuitResponse<QueryCountResponse>> QueryCountAsync(string queryCount)
         {

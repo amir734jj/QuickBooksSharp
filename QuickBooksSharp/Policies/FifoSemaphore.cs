@@ -4,18 +4,13 @@ using System.Threading.Tasks;
 
 namespace QuickBooksSharp.Policies
 {
-    internal class FifoSemaphore
+    internal class FifoSemaphore(int maxConcurrency)
     {
-        private SemaphoreSlim _semaphore;
+        private SemaphoreSlim _semaphore = new(maxConcurrency, maxConcurrency);
 
         private ConcurrentQueue<TaskCompletionSource<bool>> queue = new();
 
         public int QueueCount => queue.Count;
-
-        public FifoSemaphore(int maxConcurrency)
-        {
-            _semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
-        }
 
         public Task WaitAsync()
         {

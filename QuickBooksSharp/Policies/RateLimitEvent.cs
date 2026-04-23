@@ -2,16 +2,10 @@
 
 namespace QuickBooksSharp.Policies
 {
-    public class RateLimitEvent
+    public class RateLimitEvent(long? realmId, Uri requestUri)
     {
-        public long? RealmId { get; }
+        public long? RealmId { get; } = realmId;
 
-        public Uri RequestUri { get; }
-
-        public RateLimitEvent(long? realmId, Uri requestUri)
-        {
-            RealmId = realmId;
-            RequestUri = requestUri;
-        }
+        public Uri RequestUri { get; } = requestUri;
     }
 }

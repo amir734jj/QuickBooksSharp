@@ -24,14 +24,15 @@ namespace QuickBooksSharp.GraphQL.Services
         public CustomFieldDefinition? CustomFieldDefinition { get; set; }
     }
 
-    public class CustomFieldService : ICustomFieldService
+    public class CustomFieldService(
+        string accessToken,
+        long realmId,
+        bool useSandbox,
+        IRunPolicy? runPolicy = null,
+        ILogger? logger = null)
+        : ICustomFieldService
     {
-        private readonly GraphQLClient _client;
-
-        public CustomFieldService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
-        {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
-        }
+        private readonly GraphQLClient _client = new(accessToken, realmId, useSandbox, runPolicy, logger);
 
         public async Task<GraphQLResponse<CustomFieldDefinitionsQueryData>> GetCustomFieldDefinitionsAsync(int? first = null, string? after = null, CustomFieldDefinitionsFilter? filters = null, string? customQuery = null)
         {

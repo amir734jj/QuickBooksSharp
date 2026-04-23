@@ -3,15 +3,9 @@ using System.Linq;
 
 namespace QuickBooksSharp.GraphQL
 {
-    public class GraphQLException : Exception
+    public class GraphQLException(GraphQLError[] errors) : Exception(FormatMessage(errors))
     {
-        public GraphQLError[] Errors { get; }
-
-        public GraphQLException(GraphQLError[] errors)
-            : base(FormatMessage(errors))
-        {
-            Errors = errors;
-        }
+        public GraphQLError[] Errors { get; } = errors;
 
         private static string FormatMessage(GraphQLError[] errors)
         {
