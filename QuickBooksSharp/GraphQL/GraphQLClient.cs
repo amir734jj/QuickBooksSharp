@@ -90,15 +90,20 @@ namespace QuickBooksSharp.GraphQL
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<GraphQLResponse<TData>>(responseContent, JsonSettings);
 
+            string? intuitTid = null;
+            if (response.Headers.TryGetValues("intuit_tid", out var tidValues))
+                intuitTid = System.Linq.Enumerable.FirstOrDefault(tidValues);
+
             if (result?.HasErrors == true)
             {
-                _logger.LogWarning("GraphQL response contains {ErrorCount} error(s): {Errors}",
+                _logger.LogWarning("GraphQL response contains {ErrorCount} error(s) [intuit_tid={IntuitTid}]: {Errors}",
                     result.Errors!.Length,
+                    intuitTid,
                     string.Join("; ", System.Linq.Enumerable.Select(result.Errors, e => e.Message)));
             }
             else
             {
-                _logger.LogDebug("GraphQL {Operation} completed successfully", operationName ?? "(unnamed)");
+                _logger.LogDebug("GraphQL {Operation} completed [intuit_tid={IntuitTid}]", operationName ?? "(unnamed)", intuitTid);
             }
 
             return result!;
