@@ -1,101 +1,72 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
     public class SalesTaxCalculationInput
     {
-        [JsonPropertyName("transactionDate")]
+        [JsonProperty("transactionDate")]
         public string TransactionDate { get; set; } = null!;
-
-        [JsonPropertyName("subject")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("subject")]
         public SalesTaxSubjectInput? Subject { get; set; }
-
-        [JsonPropertyName("shipping")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("shipping")]
         public SalesTaxShippingInput? Shipping { get; set; }
-
-        [JsonPropertyName("lineItems")]
+        [JsonProperty("lineItems")]
         public SalesTaxLineItemInput[] LineItems { get; set; } = null!;
     }
 
     public class SalesTaxSubjectInput
     {
-        [JsonPropertyName("qbCustomerId")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("qbCustomerId")]
         public string? QbCustomerId { get; set; }
     }
 
     public class SalesTaxShippingInput
     {
-        [JsonPropertyName("shipFromAddress")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("shipFromAddress")]
         public SalesTaxAddressInput? ShipFromAddress { get; set; }
-
-        [JsonPropertyName("shipToAddress")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("shipToAddress")]
         public SalesTaxAddressInput? ShipToAddress { get; set; }
-
-        [JsonPropertyName("shippingFee")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("shippingFee")]
         public SalesTaxMoneyInput? ShippingFee { get; set; }
     }
 
     public class SalesTaxAddressInput
     {
-        [JsonPropertyName("freeFormAddressLine")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("freeFormAddressLine")]
         public string? FreeFormAddressLine { get; set; }
-
-        [JsonPropertyName("streetAddressLine1")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("streetAddressLine1")]
         public string? StreetAddressLine1 { get; set; }
-
-        [JsonPropertyName("streetAddressLine2")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("streetAddressLine2")]
         public string? StreetAddressLine2 { get; set; }
-
-        [JsonPropertyName("city")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("city")]
         public string? City { get; set; }
-
-        [JsonPropertyName("stateProvinceCode")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("stateProvinceCode")]
         public string? StateProvinceCode { get; set; }
-
-        [JsonPropertyName("postalCode")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("postalCode")]
         public string? PostalCode { get; set; }
-
-        [JsonPropertyName("countryCode")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("countryCode")]
         public string? CountryCode { get; set; }
     }
 
     public class SalesTaxMoneyInput
     {
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public decimal Value { get; set; }
     }
 
     public class SalesTaxLineItemInput
     {
-        [JsonPropertyName("numberOfUnits")]
+        [JsonProperty("numberOfUnits")]
         public int NumberOfUnits { get; set; }
-
-        [JsonPropertyName("pricePerUnitExcludingTaxes")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("pricePerUnitExcludingTaxes")]
         public SalesTaxMoneyInput? PricePerUnitExcludingTaxes { get; set; }
-
-        [JsonPropertyName("productVariantTaxability")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("productVariantTaxability")]
         public SalesTaxProductVariantInput? ProductVariantTaxability { get; set; }
     }
 
     public class SalesTaxProductVariantInput
     {
-        [JsonPropertyName("productVariantId")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("productVariantId")]
         public string? ProductVariantId { get; set; }
     }
 
@@ -103,145 +74,123 @@ namespace QuickBooksSharp.GraphQL.Entities
 
     public class SalesTaxCalculation
     {
-        [JsonPropertyName("transactionDate")]
+        [JsonProperty("transactionDate")]
         public string? TransactionDate { get; set; }
-
-        [JsonPropertyName("shipping")]
+        [JsonProperty("shipping")]
         public SalesTaxShipping? Shipping { get; set; }
-
-        [JsonPropertyName("lineItems")]
+        [JsonProperty("lineItems")]
         public SalesTaxLineItems? LineItems { get; set; }
-
-        [JsonPropertyName("taxTotals")]
+        [JsonProperty("taxTotals")]
         public SalesTaxTotals? TaxTotals { get; set; }
     }
 
     public class SalesTaxShipping
     {
-        [JsonPropertyName("shipFromAddress")]
+        [JsonProperty("shipFromAddress")]
         public SalesTaxAddress? ShipFromAddress { get; set; }
-
-        [JsonPropertyName("shipToAddress")]
+        [JsonProperty("shipToAddress")]
         public SalesTaxAddress? ShipToAddress { get; set; }
-
-        [JsonPropertyName("shippingFee")]
+        [JsonProperty("shippingFee")]
         public SalesTaxMoney? ShippingFee { get; set; }
-
-        [JsonPropertyName("taxAmount")]
+        [JsonProperty("taxAmount")]
         public SalesTaxMoney? TaxAmount { get; set; }
     }
 
     public class SalesTaxAddress
     {
-        [JsonPropertyName("streetAddressLine1")]
+        [JsonProperty("streetAddressLine1")]
         public string? StreetAddressLine1 { get; set; }
-
-        [JsonPropertyName("city")]
+        [JsonProperty("city")]
         public string? City { get; set; }
-
-        [JsonPropertyName("stateProvinceCode")]
+        [JsonProperty("stateProvinceCode")]
         public string? StateProvinceCode { get; set; }
-
-        [JsonPropertyName("postalCode")]
+        [JsonProperty("postalCode")]
         public string? PostalCode { get; set; }
-
-        [JsonPropertyName("countryCode")]
+        [JsonProperty("countryCode")]
         public string? CountryCode { get; set; }
     }
 
     public class SalesTaxMoney
     {
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public decimal Value { get; set; }
     }
 
     public class SalesTaxLineItems
     {
-        [JsonPropertyName("nodes")]
+        [JsonProperty("nodes")]
         public SalesTaxLineItem[]? Nodes { get; set; }
     }
 
     public class SalesTaxLineItem
     {
-        [JsonPropertyName("numberOfUnits")]
+        [JsonProperty("numberOfUnits")]
         public int? NumberOfUnits { get; set; }
-
-        [JsonPropertyName("totalPriceExcludingTaxes")]
+        [JsonProperty("totalPriceExcludingTaxes")]
         public SalesTaxMoney? TotalPriceExcludingTaxes { get; set; }
-
-        [JsonPropertyName("taxAmount")]
+        [JsonProperty("taxAmount")]
         public SalesTaxMoney? TaxAmount { get; set; }
-
-        [JsonPropertyName("productVariantTaxability")]
+        [JsonProperty("productVariantTaxability")]
         public SalesTaxProductVariant? ProductVariantTaxability { get; set; }
-
-        [JsonPropertyName("taxDetails")]
+        [JsonProperty("taxDetails")]
         public SalesTaxDetail[]? TaxDetails { get; set; }
     }
 
     public class SalesTaxProductVariant
     {
-        [JsonPropertyName("classificationCode")]
+        [JsonProperty("classificationCode")]
         public string? ClassificationCode { get; set; }
     }
 
     public class SalesTaxDetail
     {
-        [JsonPropertyName("taxAmount")]
+        [JsonProperty("taxAmount")]
         public SalesTaxMoney? TaxAmount { get; set; }
-
-        [JsonPropertyName("taxableAmount")]
+        [JsonProperty("taxableAmount")]
         public SalesTaxMoney? TaxableAmount { get; set; }
-
-        [JsonPropertyName("taxRate")]
+        [JsonProperty("taxRate")]
         public SalesTaxRateInfo? TaxRate { get; set; }
-
-        [JsonPropertyName("ratePercentageApplied")]
+        [JsonProperty("ratePercentageApplied")]
         public SalesTaxRatePercentage? RatePercentageApplied { get; set; }
     }
 
     public class SalesTaxRateInfo
     {
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string? Name { get; set; }
-
-        [JsonPropertyName("taxRate")]
+        [JsonProperty("taxRate")]
         public SalesTaxRateRef? TaxRate { get; set; }
     }
 
     public class SalesTaxRateRef
     {
-        [JsonPropertyName("taxRateReferenceId")]
+        [JsonProperty("taxRateReferenceId")]
         public string? TaxRateReferenceId { get; set; }
     }
 
     public class SalesTaxRatePercentage
     {
-        [JsonPropertyName("rate")]
+        [JsonProperty("rate")]
         public decimal? Rate { get; set; }
     }
 
     public class SalesTaxTotals
     {
-        [JsonPropertyName("totalTaxAmountExcludingShipping")]
+        [JsonProperty("totalTaxAmountExcludingShipping")]
         public SalesTaxMoney? TotalTaxAmountExcludingShipping { get; set; }
-
-        [JsonPropertyName("aggregatedTaxesExcludingShippingByRate")]
+        [JsonProperty("aggregatedTaxesExcludingShippingByRate")]
         public SalesTaxAggregatedRate[]? AggregatedTaxesExcludingShippingByRate { get; set; }
     }
 
     public class SalesTaxAggregatedRate
     {
-        [JsonPropertyName("taxableAmount")]
+        [JsonProperty("taxableAmount")]
         public SalesTaxMoney? TaxableAmount { get; set; }
-
-        [JsonPropertyName("taxAmount")]
+        [JsonProperty("taxAmount")]
         public SalesTaxMoney? TaxAmount { get; set; }
-
-        [JsonPropertyName("ratePercentageApplied")]
+        [JsonProperty("ratePercentageApplied")]
         public SalesTaxRatePercentage? RatePercentageApplied { get; set; }
-
-        [JsonPropertyName("taxRate")]
+        [JsonProperty("taxRate")]
         public SalesTaxRateInfo? TaxRate { get; set; }
     }
 }

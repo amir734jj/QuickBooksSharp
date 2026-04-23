@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.Policies;
 
@@ -7,31 +8,31 @@ namespace QuickBooksSharp.GraphQL.Services
 {
     public class DimensionDefinitionsQueryData
     {
-        [JsonPropertyName("appFoundationsActiveCustomDimensionDefinitions")]
+        [JsonProperty("appFoundationsActiveCustomDimensionDefinitions")]
         public DimensionDefinitionsConnection? DimensionDefinitions { get; set; }
     }
 
     public class DimensionValuesQueryData
     {
-        [JsonPropertyName("appFoundationsActiveCustomDimensionValues")]
+        [JsonProperty("appFoundationsActiveCustomDimensionValues")]
         public DimensionValuesConnection? DimensionValues { get; set; }
     }
 
     public class CreateDimensionValueData
     {
-        [JsonPropertyName("appFoundationsCommonCreateCustomDimensionValue")]
+        [JsonProperty("appFoundationsCommonCreateCustomDimensionValue")]
         public DimensionValue? DimensionValue { get; set; }
     }
 
     public class UpdateDimensionValueData
     {
-        [JsonPropertyName("appFoundationsCommonUpdateCustomDimensionValue")]
+        [JsonProperty("appFoundationsCommonUpdateCustomDimensionValue")]
         public DimensionValue? DimensionValue { get; set; }
     }
 
     public class DisableDimensionValueData
     {
-        [JsonPropertyName("appFoundationsCommonDisableCustomDimensionValue")]
+        [JsonProperty("appFoundationsCommonDisableCustomDimensionValue")]
         public DimensionValue? DimensionValue { get; set; }
     }
 
@@ -39,9 +40,9 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         private readonly GraphQLClient _client;
 
-        public DimensionService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public DimensionService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
+            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
         }
 
         public async Task<GraphQLResponse<DimensionDefinitionsQueryData>> GetDimensionDefinitionsAsync(int? first = null, string? after = null, DimensionDefinitionsFilter? filters = null, string? customQuery = null)

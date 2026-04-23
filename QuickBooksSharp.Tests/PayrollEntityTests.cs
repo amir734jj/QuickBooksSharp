@@ -1,27 +1,24 @@
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
-using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
     [TestClass]
     public class PayrollEntityTests
     {
-        private static readonly JsonSerializerOptions _options = QuickBooksHttpClient.JsonSerializerOptions;
-
+        
         [TestMethod]
         public void Serialize_PayrollPayUnit_AllValues()
         {
-            Assert.AreEqual("\"HOURLY\"", JsonSerializer.Serialize(PayrollPayUnit.HOURLY, _options));
-            Assert.AreEqual("\"WEEKLY\"", JsonSerializer.Serialize(PayrollPayUnit.WEEKLY, _options));
-            Assert.AreEqual("\"BIWEEKLY\"", JsonSerializer.Serialize(PayrollPayUnit.BIWEEKLY, _options));
-            Assert.AreEqual("\"SEMIMONTHLY\"", JsonSerializer.Serialize(PayrollPayUnit.SEMIMONTHLY, _options));
-            Assert.AreEqual("\"MONTHLY\"", JsonSerializer.Serialize(PayrollPayUnit.MONTHLY, _options));
-            Assert.AreEqual("\"ANNUALLY\"", JsonSerializer.Serialize(PayrollPayUnit.ANNUALLY, _options));
-            Assert.AreEqual("\"FLAT\"", JsonSerializer.Serialize(PayrollPayUnit.FLAT, _options));
+            Assert.AreEqual("\"HOURLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.HOURLY));
+            Assert.AreEqual("\"WEEKLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.WEEKLY));
+            Assert.AreEqual("\"BIWEEKLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.BIWEEKLY));
+            Assert.AreEqual("\"SEMIMONTHLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.SEMIMONTHLY));
+            Assert.AreEqual("\"MONTHLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.MONTHLY));
+            Assert.AreEqual("\"ANNUALLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.ANNUALLY));
+            Assert.AreEqual("\"FLAT\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.FLAT));
         }
 
         [TestMethod]
@@ -46,7 +43,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var comp = JsonSerializer.Deserialize<EmployeeCompensation>(json, _options);
+            var comp = Newtonsoft.Json.JsonConvert.DeserializeObject<EmployeeCompensation>(json);
 
             Assert.IsNotNull(comp);
             Assert.AreEqual("comp-1", comp.Id);
@@ -74,7 +71,7 @@ namespace QuickBooksSharp.Tests
                 Active = true
             };
 
-            var json = JsonSerializer.Serialize(filter, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
 
             Assert.IsTrue(json.Contains("\"employeeId\":\"emp-123\""));
             Assert.IsTrue(json.Contains("\"active\":true"));
@@ -89,7 +86,7 @@ namespace QuickBooksSharp.Tests
                 EmployeeId = "emp-1"
             };
 
-            var json = JsonSerializer.Serialize(filter, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
 
             Assert.IsTrue(json.Contains("\"employeeId\":\"emp-1\""));
             Assert.IsFalse(json.Contains("\"active\""));
@@ -123,7 +120,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var conn = JsonSerializer.Deserialize<EmployeeCompensationConnection>(json, _options);
+            var conn = Newtonsoft.Json.JsonConvert.DeserializeObject<EmployeeCompensationConnection>(json);
 
             Assert.IsNotNull(conn);
             Assert.AreEqual(1, conn.Edges!.Length);
@@ -164,7 +161,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<EmployeeCompensationsQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<EmployeeCompensationsQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);

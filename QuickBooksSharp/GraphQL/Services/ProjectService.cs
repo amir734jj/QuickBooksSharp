@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.Policies;
 
@@ -7,31 +8,31 @@ namespace QuickBooksSharp.GraphQL.Services
 {
     public class ProjectQueryData
     {
-        [JsonPropertyName("projectManagementProject")]
+        [JsonProperty("projectManagementProject")]
         public Project? Project { get; set; }
     }
 
     public class ProjectsQueryData
     {
-        [JsonPropertyName("projectManagementProjects")]
+        [JsonProperty("projectManagementProjects")]
         public ProjectConnection? Projects { get; set; }
     }
 
     public class CreateProjectData
     {
-        [JsonPropertyName("projectManagementCreateProject")]
+        [JsonProperty("projectManagementCreateProject")]
         public ProjectMutationResult? Result { get; set; }
     }
 
     public class UpdateProjectData
     {
-        [JsonPropertyName("projectManagementUpdateProject")]
+        [JsonProperty("projectManagementUpdateProject")]
         public ProjectMutationResult? Result { get; set; }
     }
 
     public class DeleteProjectData
     {
-        [JsonPropertyName("projectManagementDeleteProject")]
+        [JsonProperty("projectManagementDeleteProject")]
         public ProjectMutationResult? Result { get; set; }
     }
 
@@ -41,25 +42,25 @@ namespace QuickBooksSharp.GraphQL.Services
     /// </summary>
     public class ProjectMutationResult
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
 
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string? Name { get; set; }
 
-        [JsonPropertyName("version")]
+        [JsonProperty("version")]
         public int? Version { get; set; }
 
-        [JsonPropertyName("status")]
+        [JsonProperty("status")]
         public ProjectStatus? Status { get; set; }
 
-        [JsonPropertyName("description")]
+        [JsonProperty("description")]
         public string? Description { get; set; }
 
-        [JsonPropertyName("message")]
+        [JsonProperty("message")]
         public string? ErrorMessage { get; set; }
 
-        [JsonPropertyName("classification")]
+        [JsonProperty("classification")]
         public string? ErrorClassification { get; set; }
 
         public bool IsError => ErrorMessage != null;
@@ -69,9 +70,9 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         private readonly GraphQLClient _client;
 
-        public ProjectService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public ProjectService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
+            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
         }
 
         public async Task<GraphQLResponse<ProjectQueryData>> GetProjectAsync(string id, string? customQuery = null)

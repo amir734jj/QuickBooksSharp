@@ -1,9 +1,8 @@
+using Newtonsoft.Json;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum PayrollPayUnit
     {
         [EnumMember(Value = "HOURLY")]
@@ -30,94 +29,77 @@ namespace QuickBooksSharp.GraphQL.Entities
 
     public class EmployeeCompensation
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("employeeId")]
+        [JsonProperty("employeeId")]
         public string EmployeeId { get; set; } = null!;
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool Active { get; set; }
-
-        [JsonPropertyName("employerCompensation")]
+        [JsonProperty("employerCompensation")]
         public EmployerCompensation? EmployerCompensation { get; set; }
-
-        [JsonPropertyName("rate")]
+        [JsonProperty("rate")]
         public PayRate? Rate { get; set; }
     }
 
     public class EmployerCompensation
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = null!;
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool Active { get; set; }
-
-        [JsonPropertyName("type")]
+        [JsonProperty("type")]
         public PayrollVariableStringField? Type { get; set; }
     }
 
     public class PayrollVariableStringField
     {
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public string? Value { get; set; }
     }
 
     public class PayRate
     {
-        [JsonPropertyName("amount")]
+        [JsonProperty("amount")]
         public PayrollMoneyAmount? Amount { get; set; }
-
-        [JsonPropertyName("payUnit")]
+        [JsonProperty("payUnit")]
         public PayrollPayUnit? PayUnit { get; set; }
     }
 
     public class PayrollMoneyAmount
     {
-        [JsonPropertyName("amount")]
+        [JsonProperty("amount")]
         public decimal? Amount { get; set; }
-
-        [JsonPropertyName("currencyCode")]
+        [JsonProperty("currencyCode")]
         public string? CurrencyCode { get; set; }
     }
 
     public class EmployeeCompensationEdge
     {
-        [JsonPropertyName("node")]
+        [JsonProperty("node")]
         public EmployeeCompensation? Node { get; set; }
-
-        [JsonPropertyName("cursor")]
+        [JsonProperty("cursor")]
         public string? Cursor { get; set; }
     }
 
     public class EmployeeCompensationConnection
     {
-        [JsonPropertyName("edges")]
+        [JsonProperty("edges")]
         public EmployeeCompensationEdge[]? Edges { get; set; }
-
-        [JsonPropertyName("nodes")]
+        [JsonProperty("nodes")]
         public EmployeeCompensation[]? Nodes { get; set; }
-
-        [JsonPropertyName("pageInfo")]
+        [JsonProperty("pageInfo")]
         public PageInfo? PageInfo { get; set; }
     }
 
     public class EmployeeCompensationsFilter
     {
-        [JsonPropertyName("employeeId")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("employeeId")]
         public string? EmployeeId { get; set; }
-
-        [JsonPropertyName("intuitAccountId")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("intuitAccountId")]
         public string? IntuitAccountId { get; set; }
-
-        [JsonPropertyName("active")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
     }
 }

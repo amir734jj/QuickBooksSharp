@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
@@ -8,16 +8,16 @@ namespace QuickBooksSharp.GraphQL.Entities
     /// </summary>
     public class PageInfo
     {
-        [JsonPropertyName("hasNextPage")]
+        [JsonProperty("hasNextPage")]
         public bool HasNextPage { get; set; }
 
-        [JsonPropertyName("hasPreviousPage")]
+        [JsonProperty("hasPreviousPage")]
         public bool HasPreviousPage { get; set; }
 
-        [JsonPropertyName("startCursor")]
+        [JsonProperty("startCursor")]
         public string? StartCursor { get; set; }
 
-        [JsonPropertyName("endCursor")]
+        [JsonProperty("endCursor")]
         public string? EndCursor { get; set; }
     }
 }

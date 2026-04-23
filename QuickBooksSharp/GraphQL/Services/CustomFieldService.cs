@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.Policies;
 
@@ -7,19 +8,19 @@ namespace QuickBooksSharp.GraphQL.Services
 {
     public class CustomFieldDefinitionsQueryData
     {
-        [JsonPropertyName("appFoundationsCustomFieldDefinitions")]
+        [JsonProperty("appFoundationsCustomFieldDefinitions")]
         public CustomFieldDefinitionsConnection? CustomFieldDefinitions { get; set; }
     }
 
     public class CreateCustomFieldDefinitionData
     {
-        [JsonPropertyName("appFoundationsCreateCustomFieldDefinition")]
+        [JsonProperty("appFoundationsCreateCustomFieldDefinition")]
         public CustomFieldDefinition? CustomFieldDefinition { get; set; }
     }
 
     public class UpdateCustomFieldDefinitionData
     {
-        [JsonPropertyName("appFoundationsUpdateCustomFieldDefinition")]
+        [JsonProperty("appFoundationsUpdateCustomFieldDefinition")]
         public CustomFieldDefinition? CustomFieldDefinition { get; set; }
     }
 
@@ -27,9 +28,9 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         private readonly GraphQLClient _client;
 
-        public CustomFieldService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public CustomFieldService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
+            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
         }
 
         public async Task<GraphQLResponse<CustomFieldDefinitionsQueryData>> GetCustomFieldDefinitionsAsync(int? first = null, string? after = null, CustomFieldDefinitionsFilter? filters = null, string? customQuery = null)

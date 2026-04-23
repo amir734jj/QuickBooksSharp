@@ -1,9 +1,8 @@
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum ProjectStatus
     {
         [EnumMember(Value = "OPEN")]
@@ -27,8 +26,6 @@ namespace QuickBooksSharp.GraphQL.Entities
         [EnumMember(Value = "WAITING_ON_CLIENT")]
         WAITING_ON_CLIENT
     }
-
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum ProjectOrderBy
     {
         [EnumMember(Value = "COMPLETED_DATE_ASC")]
@@ -70,319 +67,227 @@ namespace QuickBooksSharp.GraphQL.Entities
 
     public class Project
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = null!;
-
-        [JsonPropertyName("description")]
+        [JsonProperty("description")]
         public string? Description { get; set; }
-
-        [JsonPropertyName("status")]
+        [JsonProperty("status")]
         public ProjectStatus? Status { get; set; }
-
-        [JsonPropertyName("version")]
+        [JsonProperty("version")]
         public int Version { get; set; }
-
-        [JsonPropertyName("startDate")]
+        [JsonProperty("startDate")]
         public string? StartDate { get; set; }
-
-        [JsonPropertyName("dueDate")]
+        [JsonProperty("dueDate")]
         public string? DueDate { get; set; }
-
-        [JsonPropertyName("completedDate")]
+        [JsonProperty("completedDate")]
         public string? CompletedDate { get; set; }
-
-        [JsonPropertyName("completionRate")]
+        [JsonProperty("completionRate")]
         public decimal? CompletionRate { get; set; }
-
-        [JsonPropertyName("deleted")]
+        [JsonProperty("deleted")]
         public bool? Deleted { get; set; }
-
-        [JsonPropertyName("pinned")]
+        [JsonProperty("pinned")]
         public bool? Pinned { get; set; }
-
-        [JsonPropertyName("priority")]
+        [JsonProperty("priority")]
         public int? Priority { get; set; }
-
-        [JsonPropertyName("type")]
+        [JsonProperty("type")]
         public string? Type { get; set; }
-
-        [JsonPropertyName("customer")]
+        [JsonProperty("customer")]
         public ProjectCustomer? Customer { get; set; }
-
-        [JsonPropertyName("client")]
+        [JsonProperty("client")]
         public ProjectClient? Client { get; set; }
-
-        [JsonPropertyName("assignee")]
+        [JsonProperty("assignee")]
         public ProjectPersona? Assignee { get; set; }
-
-        [JsonPropertyName("completedBy")]
+        [JsonProperty("completedBy")]
         public ProjectUser? CompletedBy { get; set; }
     }
 
     public class ProjectCustomer
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("displayName")]
+        [JsonProperty("displayName")]
         public string? DisplayName { get; set; }
     }
 
     public class ProjectClient
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("displayName")]
+        [JsonProperty("displayName")]
         public string? DisplayName { get; set; }
     }
 
     public class ProjectPersona
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("displayName")]
+        [JsonProperty("displayName")]
         public string? DisplayName { get; set; }
     }
 
     public class ProjectUser
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("displayName")]
+        [JsonProperty("displayName")]
         public string? DisplayName { get; set; }
     }
 
     public class ProjectEdge
     {
-        [JsonPropertyName("node")]
+        [JsonProperty("node")]
         public Project? Node { get; set; }
-
-        [JsonPropertyName("cursor")]
+        [JsonProperty("cursor")]
         public string? Cursor { get; set; }
     }
 
     public class ProjectConnection
     {
-        [JsonPropertyName("edges")]
+        [JsonProperty("edges")]
         public ProjectEdge[]? Edges { get; set; }
-
-        [JsonPropertyName("nodes")]
+        [JsonProperty("nodes")]
         public Project[]? Nodes { get; set; }
-
-        [JsonPropertyName("pageInfo")]
+        [JsonProperty("pageInfo")]
         public PageInfo? PageInfo { get; set; }
     }
 
     public class ProjectError
     {
-        [JsonPropertyName("message")]
+        [JsonProperty("message")]
         public string Message { get; set; } = null!;
-
-        [JsonPropertyName("classification")]
+        [JsonProperty("classification")]
         public string? Classification { get; set; }
     }
 
     public class ProjectFilter
     {
-        [JsonPropertyName("status")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("status")]
         public ProjectStatusExpression? Status { get; set; }
-
-        [JsonPropertyName("customer")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("customer")]
         public ProjectIdExpression? Customer { get; set; }
-
-        [JsonPropertyName("deleted")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("deleted")]
         public bool? Deleted { get; set; }
-
-        [JsonPropertyName("id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("id")]
         public ProjectIdExpression? Id { get; set; }
-
-        [JsonPropertyName("includeTasks")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("includeTasks")]
         public bool? IncludeTasks { get; set; }
-
-        [JsonPropertyName("type")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("type")]
         public ProjectStringExpression? Type { get; set; }
     }
 
     public class ProjectStatusExpression
     {
-        [JsonPropertyName("equals")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("equals")]
         public ProjectStatus? EqualsValue { get; set; }
     }
 
     public class ProjectIdExpression
     {
-        [JsonPropertyName("equals")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("equals")]
         public string? EqualsValue { get; set; }
     }
 
     public class ProjectStringExpression
     {
-        [JsonPropertyName("equals")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("equals")]
         public string? EqualsValue { get; set; }
     }
 
     public class CreateProjectInput
     {
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = null!;
-
-        [JsonPropertyName("description")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("description")]
         public string? Description { get; set; }
-
-        [JsonPropertyName("customer")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("customer")]
         public ProjectCustomerInput? Customer { get; set; }
-
-        [JsonPropertyName("client")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("client")]
         public ProjectClientInput? Client { get; set; }
-
-        [JsonPropertyName("assignee")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("assignee")]
         public ProjectPersonaInput? Assignee { get; set; }
-
-        [JsonPropertyName("status")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("status")]
         public ProjectStatus? Status { get; set; }
-
-        [JsonPropertyName("startDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("startDate")]
         public string? StartDate { get; set; }
-
-        [JsonPropertyName("dueDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("dueDate")]
         public string? DueDate { get; set; }
-
-        [JsonPropertyName("completedDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("completedDate")]
         public string? CompletedDate { get; set; }
-
-        [JsonPropertyName("completionRate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("completionRate")]
         public decimal? CompletionRate { get; set; }
-
-        [JsonPropertyName("pinned")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("pinned")]
         public bool? Pinned { get; set; }
-
-        [JsonPropertyName("priority")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("priority")]
         public int? Priority { get; set; }
-
-        [JsonPropertyName("type")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("type")]
         public string? Type { get; set; }
     }
 
     public class UpdateProjectInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("version")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("version")]
         public int? Version { get; set; }
-
-        [JsonPropertyName("name")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("name")]
         public string? Name { get; set; }
-
-        [JsonPropertyName("description")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("description")]
         public string? Description { get; set; }
-
-        [JsonPropertyName("customer")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("customer")]
         public ProjectCustomerInput? Customer { get; set; }
-
-        [JsonPropertyName("client")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("client")]
         public ProjectClientInput? Client { get; set; }
-
-        [JsonPropertyName("assignee")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("assignee")]
         public ProjectPersonaInput? Assignee { get; set; }
-
-        [JsonPropertyName("status")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("status")]
         public ProjectStatus? Status { get; set; }
-
-        [JsonPropertyName("startDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("startDate")]
         public string? StartDate { get; set; }
-
-        [JsonPropertyName("dueDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("dueDate")]
         public string? DueDate { get; set; }
-
-        [JsonPropertyName("completedDate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("completedDate")]
         public string? CompletedDate { get; set; }
-
-        [JsonPropertyName("completionRate")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("completionRate")]
         public decimal? CompletionRate { get; set; }
-
-        [JsonPropertyName("pinned")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("pinned")]
         public bool? Pinned { get; set; }
-
-        [JsonPropertyName("priority")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("priority")]
         public int? Priority { get; set; }
-
-        [JsonPropertyName("type")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("type")]
         public string? Type { get; set; }
     }
 
     public class DeleteProjectInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("version")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("version")]
         public int? Version { get; set; }
     }
 
     public class ProjectCustomerInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
     }
 
     public class ProjectClientInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
     }
 
     public class ProjectPersonaInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
     }
 
     public class ProjectUserInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
     }
 }

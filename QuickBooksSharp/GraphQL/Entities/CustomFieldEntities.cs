@@ -1,9 +1,8 @@
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum CustomFieldDataType
     {
         [EnumMember(Value = "STRING")]
@@ -21,8 +20,6 @@ namespace QuickBooksSharp.GraphQL.Entities
         [EnumMember(Value = "BOOLEAN")]
         BOOLEAN
     }
-
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum CustomFieldAllowedOperation
     {
         [EnumMember(Value = "READ")]
@@ -37,8 +34,6 @@ namespace QuickBooksSharp.GraphQL.Entities
         [EnumMember(Value = "SORTABLE")]
         SORTABLE
     }
-
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum CustomFieldAssociationCondition
     {
         [EnumMember(Value = "REQUIRED")]
@@ -47,8 +42,6 @@ namespace QuickBooksSharp.GraphQL.Entities
         [EnumMember(Value = "OPTIONAL")]
         OPTIONAL
     }
-
-    [JsonConverter(typeof(JsonStringEnumMemberConverter))]
     public enum CustomFieldCreatedSource
     {
         [EnumMember(Value = "AUTO_ENABLE_CF")]
@@ -63,171 +56,128 @@ namespace QuickBooksSharp.GraphQL.Entities
 
     public class CustomFieldDefinition
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
 
-        [JsonPropertyName("legacyID")]
+        [JsonProperty("legacyID")]
         public string LegacyID { get; set; } = null!;
 
-        [JsonPropertyName("legacyIDV2")]
+        [JsonProperty("legacyIDV2")]
         public string LegacyIDV2 { get; set; } = null!;
-
-        [JsonPropertyName("label")]
+        [JsonProperty("label")]
         public string? Label { get; set; }
-
-        [JsonPropertyName("dataType")]
+        [JsonProperty("dataType")]
         public CustomFieldDataType DataType { get; set; }
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("required")]
+        [JsonProperty("required")]
         public bool? Required { get; set; }
-
-        [JsonPropertyName("entityVersion")]
+        [JsonProperty("entityVersion")]
         public int? EntityVersion { get; set; }
-
-        [JsonPropertyName("colorCode")]
+        [JsonProperty("colorCode")]
         public string? ColorCode { get; set; }
-
-        [JsonPropertyName("createdSource")]
+        [JsonProperty("createdSource")]
         public CustomFieldCreatedSource? CreatedSource { get; set; }
-
-        [JsonPropertyName("associations")]
+        [JsonProperty("associations")]
         public CustomFieldAssociation[]? Associations { get; set; }
-
-        [JsonPropertyName("dropDownOptions")]
+        [JsonProperty("dropDownOptions")]
         public CustomFieldDropDownOption[]? DropDownOptions { get; set; }
     }
 
     public class CustomFieldAssociation
     {
-        [JsonPropertyName("entityType")]
+        [JsonProperty("entityType")]
         public string? EntityType { get; set; }
-
-        [JsonPropertyName("allowedOperations")]
+        [JsonProperty("allowedOperations")]
         public CustomFieldAllowedOperation[]? AllowedOperations { get; set; }
-
-        [JsonPropertyName("condition")]
+        [JsonProperty("condition")]
         public CustomFieldAssociationCondition? Condition { get; set; }
     }
 
     public class CustomFieldDropDownOption
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public string? Value { get; set; }
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
     }
 
     public class CustomFieldDefinitionEdge
     {
-        [JsonPropertyName("node")]
+        [JsonProperty("node")]
         public CustomFieldDefinition? Node { get; set; }
-
-        [JsonPropertyName("cursor")]
+        [JsonProperty("cursor")]
         public string? Cursor { get; set; }
     }
 
     public class CustomFieldDefinitionsConnection
     {
-        [JsonPropertyName("edges")]
+        [JsonProperty("edges")]
         public CustomFieldDefinitionEdge[]? Edges { get; set; }
-
-        [JsonPropertyName("pageInfo")]
+        [JsonProperty("pageInfo")]
         public PageInfo? PageInfo { get; set; }
     }
 
     public class CustomFieldDefinitionCreateInput
     {
-        [JsonPropertyName("label")]
+        [JsonProperty("label")]
         public string Label { get; set; } = null!;
-
-        [JsonPropertyName("dataType")]
+        [JsonProperty("dataType")]
         public CustomFieldDataType DataType { get; set; }
-
-        [JsonPropertyName("associations")]
+        [JsonProperty("associations")]
         public CustomFieldAssociationInput[] Associations { get; set; } = null!;
-
-        [JsonPropertyName("active")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("dropDownOptions")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("dropDownOptions")]
         public CustomFieldDropDownOptionInput[]? DropDownOptions { get; set; }
     }
 
     public class CustomFieldDefinitionUpdateInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("label")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("label")]
         public string? Label { get; set; }
-
-        [JsonPropertyName("dataType")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("dataType")]
         public CustomFieldDataType? DataType { get; set; }
-
-        [JsonPropertyName("associations")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("associations")]
         public CustomFieldAssociationInput[]? Associations { get; set; }
-
-        [JsonPropertyName("active")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("dropDownOptions")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("dropDownOptions")]
         public CustomFieldDropDownOptionInput[]? DropDownOptions { get; set; }
 
-        [JsonPropertyName("legacyIDV2")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("legacyIDV2")]
         public string? LegacyIDV2 { get; set; }
     }
 
     public class CustomFieldAssociationInput
     {
-        [JsonPropertyName("entityType")]
+        [JsonProperty("entityType")]
         public string EntityType { get; set; } = null!;
-
-        [JsonPropertyName("allowedOperations")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("allowedOperations")]
         public CustomFieldAllowedOperation[]? AllowedOperations { get; set; }
-
-        [JsonPropertyName("condition")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("condition")]
         public CustomFieldAssociationCondition? Condition { get; set; }
     }
 
     public class CustomFieldDropDownOptionInput
     {
-        [JsonPropertyName("id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("id")]
         public string? Id { get; set; }
-
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public string Value { get; set; } = null!;
-
-        [JsonPropertyName("active")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
     }
 
     public class CustomFieldDefinitionsFilter
     {
-        [JsonPropertyName("active")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("entityType")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("entityType")]
         public string? EntityType { get; set; }
     }
 }

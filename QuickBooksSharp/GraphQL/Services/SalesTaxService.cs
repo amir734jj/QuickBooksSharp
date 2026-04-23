@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.Policies;
 
@@ -7,13 +8,13 @@ namespace QuickBooksSharp.GraphQL.Services
 {
     public class CalculateSalesTaxData
     {
-        [JsonPropertyName("indirectTaxCalculateSaleTransactionTax")]
+        [JsonProperty("indirectTaxCalculateSaleTransactionTax")]
         public SalesTaxCalculationPayload? Result { get; set; }
     }
 
     public class SalesTaxCalculationPayload
     {
-        [JsonPropertyName("taxCalculation")]
+        [JsonProperty("taxCalculation")]
         public SalesTaxCalculation? TaxCalculation { get; set; }
     }
 
@@ -21,9 +22,9 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         private readonly GraphQLClient _client;
 
-        public SalesTaxService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public SalesTaxService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
+            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
         }
 
         public async Task<GraphQLResponse<CalculateSalesTaxData>> CalculateSalesTaxAsync(SalesTaxCalculationInput input, string? customQuery = null)

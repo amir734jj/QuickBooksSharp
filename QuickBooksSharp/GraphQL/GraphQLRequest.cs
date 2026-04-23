@@ -1,18 +1,16 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL
 {
     public class GraphQLRequest
     {
-        [JsonPropertyName("query")]
+        [JsonProperty("query")]
         public string Query { get; set; } = null!;
 
-        [JsonPropertyName("operationName")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("operationName")]
         public string? OperationName { get; set; }
 
-        [JsonPropertyName("variables")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("variables")]
         public object? Variables { get; set; }
     }
 }

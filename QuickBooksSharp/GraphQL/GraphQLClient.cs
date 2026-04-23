@@ -1,10 +1,12 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using QuickBooksSharp.Infrastructure;
 using QuickBooksSharp.Policies;
 
@@ -16,6 +18,13 @@ namespace QuickBooksSharp.GraphQL
         private readonly long? _realmId;
         private readonly string _endpoint;
         private readonly IRunPolicy _runPolicy;
+        private readonly ILogger _logger;
+
+        public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Converters = { new StringEnumConverter() }
+        };
 
         private static readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
         {
@@ -24,18 +33,21 @@ namespace QuickBooksSharp.GraphQL
 
         static GraphQLClient()
         {
+            JsonConvert.DefaultSettings = () => JsonSettings;
+
             _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(nameof(QuickBooksSharp), typeof(GraphQLClient).Assembly.GetName().Version!.ToString()));
             _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("(github.com/better-reports/QuickBooksSharp)"));
             _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public GraphQLClient(string accessToken, long? realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public GraphQLClient(string accessToken, long? realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
             _accessToken = accessToken;
             _realmId = realmId;
             _endpoint = GraphQLUrl.GetEndpoint(useSandbox);
             _runPolicy = runPolicy ?? RunPolicy.DefaultRunPolicy;
+            _logger = logger ?? NullLogger.Instance;
         }
 
         public Task<GraphQLResponse<TData>> SendQueryAsync<TData>(string query, object? variables = null, string? operationName = null) where TData : class
@@ -57,7 +69,9 @@ namespace QuickBooksSharp.GraphQL
                 OperationName = operationName
             };
 
-            var jsonContent = JsonSerializer.Serialize(graphQLRequest, QuickBooksHttpClient.JsonSerializerOptions);
+            var jsonContent = JsonConvert.SerializeObject(graphQLRequest);
+
+            _logger.LogDebug("GraphQL {Operation} to {Endpoint}", operationName ?? "(unnamed)", _endpoint);
 
             var response = await _runPolicy.RunAsync(_realmId, async () =>
             {
@@ -72,13 +86,33 @@ namespace QuickBooksSharp.GraphQL
                     var ex = httpResponse.IsSuccessStatusCode ? null : new QuickBooksException(request, httpResponse, await httpResponse.Content.ReadAsStringAsync());
 
                     if (ex?.IsRateLimit == true)
+                    {
+                        _logger.LogWarning("Rate limit hit for realm {RealmId} on {Uri}", _realmId, request.RequestUri);
                         RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri!));
+                    }
+                    else if (ex != null)
+                    {
+                        _logger.LogError("GraphQL request failed: {StatusCode} {Reason}", (int)httpResponse.StatusCode, httpResponse.ReasonPhrase);
+                    }
 
                     return new QuickBooksAPIResponse(httpResponse, ex);
                 }
             });
 
-            var result = await response.Content.ReadFromJsonAsync<GraphQLResponse<TData>>(QuickBooksHttpClient.JsonSerializerOptions);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<GraphQLResponse<TData>>(responseContent);
+
+            if (result?.HasErrors == true)
+            {
+                _logger.LogWarning("GraphQL response contains {ErrorCount} error(s): {Errors}",
+                    result.Errors!.Length,
+                    string.Join("; ", System.Linq.Enumerable.Select(result.Errors, e => e.Message)));
+            }
+            else
+            {
+                _logger.LogDebug("GraphQL {Operation} completed successfully", operationName ?? "(unnamed)");
+            }
+
             return result!;
         }
     }

@@ -1,17 +1,14 @@
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
-using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
     [TestClass]
     public class DimensionEntityTests
     {
-        private static readonly JsonSerializerOptions _options = QuickBooksHttpClient.JsonSerializerOptions;
-
+        
         [TestMethod]
         public void Deserialize_DimensionDefinition()
         {
@@ -33,7 +30,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var def = JsonSerializer.Deserialize<DimensionDefinition>(json, _options);
+            var def = Newtonsoft.Json.JsonConvert.DeserializeObject<DimensionDefinition>(json);
 
             Assert.IsNotNull(def);
             Assert.AreEqual("dim-1", def.Id);
@@ -58,7 +55,7 @@ namespace QuickBooksSharp.Tests
                 ""entityVersion"": 3
             }";
 
-            var val = JsonSerializer.Deserialize<DimensionValue>(json, _options);
+            var val = Newtonsoft.Json.JsonConvert.DeserializeObject<DimensionValue>(json);
 
             Assert.IsNotNull(val);
             Assert.AreEqual("dv-1", val.Id);
@@ -76,7 +73,7 @@ namespace QuickBooksSharp.Tests
                 Value = "Sales"
             };
 
-            var json = JsonSerializer.Serialize(input, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
 
             Assert.IsTrue(json.Contains("\"dimensionDefinitionId\":\"dim-1\""));
             Assert.IsTrue(json.Contains("\"value\":\"Sales\""));
@@ -90,7 +87,7 @@ namespace QuickBooksSharp.Tests
                 DimensionDefinitionId = "dim-1"
             };
 
-            var json = JsonSerializer.Serialize(filter, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
 
             Assert.IsTrue(json.Contains("\"dimensionDefinitionId\":\"dim-1\""));
         }
@@ -108,7 +105,7 @@ namespace QuickBooksSharp.Tests
                 ""pageInfo"": { ""hasNextPage"": false, ""hasPreviousPage"": false }
             }";
 
-            var conn = JsonSerializer.Deserialize<DimensionDefinitionsConnection>(json, _options);
+            var conn = Newtonsoft.Json.JsonConvert.DeserializeObject<DimensionDefinitionsConnection>(json);
 
             Assert.IsNotNull(conn);
             Assert.AreEqual(1, conn.Edges!.Length);
@@ -133,7 +130,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<DimensionDefinitionsQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<DimensionDefinitionsQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);

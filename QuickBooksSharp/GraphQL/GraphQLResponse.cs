@@ -1,16 +1,16 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL
 {
     public class GraphQLResponse<TData> where TData : class
     {
-        [JsonPropertyName("data")]
+        [JsonProperty("data")]
         public TData? Data { get; set; }
 
-        [JsonPropertyName("errors")]
+        [JsonProperty("errors")]
         public GraphQLError[]? Errors { get; set; }
 
-        [JsonPropertyName("extensions")]
+        [JsonProperty("extensions")]
         public GraphQLExtensions? Extensions { get; set; }
 
         public bool HasErrors => Errors != null && Errors.Length > 0;
@@ -18,40 +18,40 @@ namespace QuickBooksSharp.GraphQL
 
     public class GraphQLError
     {
-        [JsonPropertyName("message")]
+        [JsonProperty("message")]
         public string Message { get; set; } = null!;
 
-        [JsonPropertyName("locations")]
+        [JsonProperty("locations")]
         public GraphQLErrorLocation[]? Locations { get; set; }
 
-        [JsonPropertyName("path")]
+        [JsonProperty("path")]
         public object[]? Path { get; set; }
 
-        [JsonPropertyName("extensions")]
+        [JsonProperty("extensions")]
         public GraphQLErrorExtensions? Extensions { get; set; }
     }
 
     public class GraphQLErrorLocation
     {
-        [JsonPropertyName("line")]
+        [JsonProperty("line")]
         public int Line { get; set; }
 
-        [JsonPropertyName("column")]
+        [JsonProperty("column")]
         public int Column { get; set; }
     }
 
     public class GraphQLErrorExtensions
     {
-        [JsonPropertyName("code")]
+        [JsonProperty("code")]
         public string? Code { get; set; }
 
-        [JsonPropertyName("classification")]
+        [JsonProperty("classification")]
         public string? Classification { get; set; }
     }
 
     public class GraphQLExtensions
     {
-        [JsonPropertyName("requestId")]
+        [JsonProperty("requestId")]
         public string? RequestId { get; set; }
     }
 }

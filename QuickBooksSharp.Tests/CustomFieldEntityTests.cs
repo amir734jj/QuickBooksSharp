@@ -1,17 +1,14 @@
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
-using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
     [TestClass]
     public class CustomFieldEntityTests
     {
-        private static readonly JsonSerializerOptions _options = QuickBooksHttpClient.JsonSerializerOptions;
-
+        
         [TestMethod]
         public void Deserialize_CustomFieldDefinition()
         {
@@ -34,7 +31,7 @@ namespace QuickBooksSharp.Tests
                 ""dropDownOptions"": null
             }";
 
-            var def = JsonSerializer.Deserialize<CustomFieldDefinition>(json, _options);
+            var def = Newtonsoft.Json.JsonConvert.DeserializeObject<CustomFieldDefinition>(json);
 
             Assert.IsNotNull(def);
             Assert.AreEqual("cf-1", def.Id);
@@ -55,11 +52,11 @@ namespace QuickBooksSharp.Tests
         [TestMethod]
         public void Serialize_CustomFieldDataType_AllValues()
         {
-            Assert.AreEqual("\"STRING\"", JsonSerializer.Serialize(CustomFieldDataType.STRING, _options));
-            Assert.AreEqual("\"NUMBER\"", JsonSerializer.Serialize(CustomFieldDataType.NUMBER, _options));
-            Assert.AreEqual("\"DATE\"", JsonSerializer.Serialize(CustomFieldDataType.DATE, _options));
-            Assert.AreEqual("\"DROPDOWN\"", JsonSerializer.Serialize(CustomFieldDataType.DROPDOWN, _options));
-            Assert.AreEqual("\"BOOLEAN\"", JsonSerializer.Serialize(CustomFieldDataType.BOOLEAN, _options));
+            Assert.AreEqual("\"STRING\"", Newtonsoft.Json.JsonConvert.SerializeObject(CustomFieldDataType.STRING));
+            Assert.AreEqual("\"NUMBER\"", Newtonsoft.Json.JsonConvert.SerializeObject(CustomFieldDataType.NUMBER));
+            Assert.AreEqual("\"DATE\"", Newtonsoft.Json.JsonConvert.SerializeObject(CustomFieldDataType.DATE));
+            Assert.AreEqual("\"DROPDOWN\"", Newtonsoft.Json.JsonConvert.SerializeObject(CustomFieldDataType.DROPDOWN));
+            Assert.AreEqual("\"BOOLEAN\"", Newtonsoft.Json.JsonConvert.SerializeObject(CustomFieldDataType.BOOLEAN));
         }
 
         [TestMethod]
@@ -84,7 +81,7 @@ namespace QuickBooksSharp.Tests
                 }
             };
 
-            var json = JsonSerializer.Serialize(input, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
 
             Assert.IsTrue(json.Contains("\"label\":\"Region\""));
             Assert.IsTrue(json.Contains("\"dataType\":\"DROPDOWN\""));
@@ -102,7 +99,7 @@ namespace QuickBooksSharp.Tests
                 Active = false
             };
 
-            var json = JsonSerializer.Serialize(input, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
 
             Assert.IsTrue(json.Contains("\"id\":\"cf-1\""));
             Assert.IsTrue(json.Contains("\"active\":false"));
@@ -127,7 +124,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var conn = JsonSerializer.Deserialize<CustomFieldDefinitionsConnection>(json, _options);
+            var conn = Newtonsoft.Json.JsonConvert.DeserializeObject<CustomFieldDefinitionsConnection>(json);
 
             Assert.IsNotNull(conn);
             Assert.AreEqual(1, conn.Edges!.Length);
@@ -153,7 +150,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<CustomFieldDefinitionsQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<CustomFieldDefinitionsQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);

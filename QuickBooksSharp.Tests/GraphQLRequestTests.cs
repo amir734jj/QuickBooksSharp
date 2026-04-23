@@ -6,6 +6,7 @@ namespace QuickBooksSharp.Tests
     [TestClass]
     public class GraphQLRequestTests
     {
+        
         [TestMethod]
         public void Serialize_QueryOnly()
         {
@@ -14,7 +15,7 @@ namespace QuickBooksSharp.Tests
                 Query = "{ company { id } }"
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(request);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
 
             Assert.IsTrue(json.Contains("\"query\":\"{ company { id } }\""));
             Assert.IsFalse(json.Contains("\"operationName\""));
@@ -31,7 +32,7 @@ namespace QuickBooksSharp.Tests
                 Variables = new { id = "123" }
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(request);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
 
             Assert.IsTrue(json.Contains("\"operationName\":\"GetProject\""));
             Assert.IsTrue(json.Contains("\"variables\""));
@@ -48,7 +49,7 @@ namespace QuickBooksSharp.Tests
                 Variables = null
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(request);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
 
             Assert.IsFalse(json.Contains("operationName"));
             Assert.IsFalse(json.Contains("variables"));

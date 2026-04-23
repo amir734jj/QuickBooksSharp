@@ -1,17 +1,14 @@
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
-using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
     [TestClass]
     public class GraphQLResponseTests
     {
-        private static readonly JsonSerializerOptions _options = QuickBooksHttpClient.JsonSerializerOptions;
-
+        
         [TestMethod]
         public void Deserialize_SuccessResponse()
         {
@@ -20,7 +17,7 @@ namespace QuickBooksSharp.Tests
                 ""extensions"": { ""requestId"": ""req-1"" }
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<ProjectQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<ProjectQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);
@@ -47,7 +44,7 @@ namespace QuickBooksSharp.Tests
                 ]
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<ProjectQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<ProjectQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsTrue(response.HasErrors);
@@ -67,7 +64,7 @@ namespace QuickBooksSharp.Tests
                 ""errors"": [{ ""message"": ""Partial error on optional field"" }]
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<ProjectQueryData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<ProjectQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsTrue(response.HasErrors);

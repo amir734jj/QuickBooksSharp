@@ -1,5 +1,6 @@
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.Policies;
 
@@ -7,7 +8,7 @@ namespace QuickBooksSharp.GraphQL.Services
 {
     public class EmployeeCompensationsQueryData
     {
-        [JsonPropertyName("payrollEmployeeCompensations")]
+        [JsonProperty("payrollEmployeeCompensations")]
         public EmployeeCompensationConnection? EmployeeCompensations { get; set; }
     }
 
@@ -15,9 +16,9 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         private readonly GraphQLClient _client;
 
-        public PayrollCompensationService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null)
+        public PayrollCompensationService(string accessToken, long realmId, bool useSandbox, IRunPolicy? runPolicy = null, ILogger? logger = null)
         {
-            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy);
+            _client = new GraphQLClient(accessToken, realmId, useSandbox, runPolicy, logger);
         }
 
         public async Task<GraphQLResponse<EmployeeCompensationsQueryData>> GetEmployeeCompensationsAsync(EmployeeCompensationsFilter filter, int? first = null, string? after = null, string? customQuery = null)

@@ -1,140 +1,116 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
 {
     public class DimensionDefinition
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("label")]
+        [JsonProperty("label")]
         public string Label { get; set; } = null!;
-
-        [JsonPropertyName("dataType")]
+        [JsonProperty("dataType")]
         public CustomFieldDataType DataType { get; set; }
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("required")]
+        [JsonProperty("required")]
         public bool? Required { get; set; }
-
-        [JsonPropertyName("associations")]
+        [JsonProperty("associations")]
         public CustomFieldAssociation[]? Associations { get; set; }
-
-        [JsonPropertyName("sharedInfo")]
+        [JsonProperty("sharedInfo")]
         public DimensionSharedInfo? SharedInfo { get; set; }
     }
 
     public class DimensionSharedInfo
     {
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string? Name { get; set; }
-
-        [JsonPropertyName("description")]
+        [JsonProperty("description")]
         public string? Description { get; set; }
     }
 
     public class DimensionDefinitionEdge
     {
-        [JsonPropertyName("node")]
+        [JsonProperty("node")]
         public DimensionDefinition? Node { get; set; }
-
-        [JsonPropertyName("cursor")]
+        [JsonProperty("cursor")]
         public string? Cursor { get; set; }
     }
 
     public class DimensionDefinitionsConnection
     {
-        [JsonPropertyName("edges")]
+        [JsonProperty("edges")]
         public DimensionDefinitionEdge[]? Edges { get; set; }
-
-        [JsonPropertyName("pageInfo")]
+        [JsonProperty("pageInfo")]
         public PageInfo? PageInfo { get; set; }
     }
 
     public class DimensionValue
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public string? Value { get; set; }
-
-        [JsonPropertyName("active")]
+        [JsonProperty("active")]
         public bool? Active { get; set; }
-
-        [JsonPropertyName("entityVersion")]
+        [JsonProperty("entityVersion")]
         public int? EntityVersion { get; set; }
     }
 
     public class DimensionValueEdge
     {
-        [JsonPropertyName("node")]
+        [JsonProperty("node")]
         public DimensionValue? Node { get; set; }
-
-        [JsonPropertyName("cursor")]
+        [JsonProperty("cursor")]
         public string? Cursor { get; set; }
     }
 
     public class DimensionValuesConnection
     {
-        [JsonPropertyName("edges")]
+        [JsonProperty("edges")]
         public DimensionValueEdge[]? Edges { get; set; }
-
-        [JsonPropertyName("pageInfo")]
+        [JsonProperty("pageInfo")]
         public PageInfo? PageInfo { get; set; }
     }
 
     public class DimensionDefinitionsFilter
     {
-        [JsonPropertyName("entityType")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("entityType")]
         public string? EntityType { get; set; }
     }
 
     public class DimensionValuesFilter
     {
-        [JsonPropertyName("dimensionDefinitionId")]
+        [JsonProperty("dimensionDefinitionId")]
         public string DimensionDefinitionId { get; set; } = null!;
     }
 
     public class DimensionValueCreateInput
     {
-        [JsonPropertyName("dimensionDefinitionId")]
+        [JsonProperty("dimensionDefinitionId")]
         public string DimensionDefinitionId { get; set; } = null!;
-
-        [JsonPropertyName("value")]
+        [JsonProperty("value")]
         public string Value { get; set; } = null!;
     }
 
     public class DimensionValueUpdateInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("dimensionDefinitionId")]
+        [JsonProperty("dimensionDefinitionId")]
         public string DimensionDefinitionId { get; set; } = null!;
-
-        [JsonPropertyName("value")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("value")]
         public string? Value { get; set; }
-
-        [JsonPropertyName("entityVersion")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("entityVersion")]
         public int? EntityVersion { get; set; }
     }
 
     public class DimensionValueDisableInput
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; } = null!;
-
-        [JsonPropertyName("dimensionDefinitionId")]
+        [JsonProperty("dimensionDefinitionId")]
         public string DimensionDefinitionId { get; set; } = null!;
-
-        [JsonPropertyName("entityVersion")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty("entityVersion")]
         public int? EntityVersion { get; set; }
     }
 }

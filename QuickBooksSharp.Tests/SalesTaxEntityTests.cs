@@ -1,17 +1,14 @@
-using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
-using QuickBooksSharp.Infrastructure;
 
 namespace QuickBooksSharp.Tests
 {
     [TestClass]
     public class SalesTaxEntityTests
     {
-        private static readonly JsonSerializerOptions _options = QuickBooksHttpClient.JsonSerializerOptions;
-
+        
         [TestMethod]
         public void Serialize_SalesTaxCalculationInput()
         {
@@ -36,7 +33,7 @@ namespace QuickBooksSharp.Tests
                 }
             };
 
-            var json = JsonSerializer.Serialize(input, _options);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
 
             Assert.IsTrue(json.Contains("\"transactionDate\":\"2026-05-15\""));
             Assert.IsTrue(json.Contains("\"qbCustomerId\":\"1\""));
@@ -92,7 +89,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var calc = JsonSerializer.Deserialize<SalesTaxCalculation>(json, _options);
+            var calc = Newtonsoft.Json.JsonConvert.DeserializeObject<SalesTaxCalculation>(json);
 
             Assert.IsNotNull(calc);
             Assert.AreEqual("2026-05-15", calc.TransactionDate);
@@ -152,7 +149,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = JsonSerializer.Deserialize<GraphQLResponse<CalculateSalesTaxData>>(json, _options);
+            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<CalculateSalesTaxData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);
