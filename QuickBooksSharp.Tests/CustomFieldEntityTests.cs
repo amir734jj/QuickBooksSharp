@@ -67,19 +67,19 @@ namespace QuickBooksSharp.Tests
             {
                 Label = "Region",
                 DataType = CustomFieldDataType.DROPDOWN,
-                Associations = new[]
-                {
+                Associations =
+                [
                     new CustomFieldAssociationInput
                     {
                         EntityType = "INVOICE",
-                        AllowedOperations = new[] { CustomFieldAllowedOperation.READ, CustomFieldAllowedOperation.WRITE }
+                        AllowedOperations = [CustomFieldAllowedOperation.READ, CustomFieldAllowedOperation.WRITE]
                     }
-                },
-                DropDownOptions = new[]
-                {
+                ],
+                DropDownOptions =
+                [
                     new CustomFieldDropDownOptionInput { Value = "East" },
                     new CustomFieldDropDownOptionInput { Value = "West" }
-                }
+                ]
             };
 
             var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
@@ -159,6 +159,69 @@ namespace QuickBooksSharp.Tests
             Assert.AreEqual(1, response.Data.CustomFieldDefinitions.Edges!.Length);
             Assert.AreEqual(CustomFieldDataType.NUMBER, response.Data.CustomFieldDefinitions.Edges[0].Node!.DataType);
             Assert.IsTrue(response.Data.CustomFieldDefinitions.PageInfo!.HasNextPage);
+        }
+
+        [TestMethod]
+        public void Deserialize_CustomFieldDefinition_WithDropDown()
+        {
+            var json = @"{
+                ""id"": ""cf-1"",
+                ""legacyID"": ""l1"",
+                ""legacyIDV2"": ""l2"",
+                ""label"": ""Region"",
+                ""dataType"": ""DROPDOWN"",
+                ""active"": true,
+                ""colorCode"": ""#FF0000"",
+                ""createdSource"": ""MANUAL"",
+                ""associations"": [],
+                ""dropDownOptions"": [
+                    { ""id"": ""o1"", ""value"": ""East"", ""active"": true },
+                    { ""id"": ""o2"", ""value"": ""West"", ""active"": false }
+                ]
+            }";
+
+            var def = JsonConvert.DeserializeObject<CustomFieldDefinition>(json, GraphQLClient.JsonSettings);
+
+            Assert.IsNotNull(def);
+            Assert.AreEqual("Region", def.Label);
+            Assert.AreEqual(CustomFieldDataType.DROPDOWN, def.DataType);
+            Assert.AreEqual("#FF0000", def.ColorCode);
+            Assert.AreEqual(CustomFieldCreatedSource.MANUAL, def.CreatedSource);
+            Assert.AreEqual(2, def.DropDownOptions!.Length);
+            Assert.AreEqual("East", def.DropDownOptions[0].Value);
+            Assert.AreEqual(false, def.DropDownOptions[1].Active);
+        }
+
+        [TestMethod]
+        public void Serialize_CustomFieldDefinitionUpdateInput_AllFields()
+        {
+            var input = new CustomFieldDefinitionUpdateInput
+            {
+                Id = "cf-1",
+                Label = "Updated",
+                DataType = CustomFieldDataType.NUMBER,
+                Active = true,
+                LegacyIDV2 = "12345",
+                Associations = new[] { new CustomFieldAssociationInput { EntityType = "VENDOR", Condition = CustomFieldAssociationCondition.REQUIRED } },
+                DropDownOptions = new[] { new CustomFieldDropDownOptionInput { Id = "o1", Value = "Option", Active = true } }
+            };
+
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"label\":\"Updated\""));
+            Assert.IsTrue(json.Contains("\"dataType\":\"NUMBER\""));
+            Assert.IsTrue(json.Contains("\"legacyIDV2\":\"12345\""));
+            Assert.IsTrue(json.Contains("\"condition\":\"REQUIRED\""));
+        }
+
+        [TestMethod]
+        public void Serialize_CustomFieldDefinitionsFilter()
+        {
+            var filter = new CustomFieldDefinitionsFilter { Active = true, EntityType = "INVOICE" };
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"active\":true"));
+            Assert.IsTrue(json.Contains("\"entityType\":\"INVOICE\""));
         }
     }
 }

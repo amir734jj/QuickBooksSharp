@@ -9,7 +9,7 @@ namespace QuickBooksSharp
     public class Helper
     {
         /// <summary>
-        /// Returns whether the webhook request was signed by Intui
+        /// Returns whether the webhook request was signed by Intuit
         /// </summary>
         /// <param name="intuitSignature">Value from the HTTP header "intuit-signature"</param>
         /// <param name="webhookVerifierToken">The webhook verifier token located in the Intuit Developer dashboard</param>
@@ -23,11 +23,6 @@ namespace QuickBooksSharp
             var hmacBytes = hmac.ComputeHash(jsonBytes);
             var hash = Convert.ToBase64String(hmacBytes);
             return hash == intuitSignature;
-        }
-
-        public static string SerializeToJSON(object o)
-        {
-            return JsonSerializer.Serialize(o, QuickBooksHttpClient.JsonSerializerOptions);
         }
     }
 }

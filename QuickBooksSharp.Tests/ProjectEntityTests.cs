@@ -247,5 +247,96 @@ namespace QuickBooksSharp.Tests
             Assert.AreEqual("Alpha", response.Data.Projects.Edges[0].Node!.Name);
             Assert.AreEqual(ProjectStatus.IN_PROGRESS, response.Data.Projects.Edges[0].Node.Status);
         }
+
+        [TestMethod]
+        public void Serialize_UpdateProjectInput()
+        {
+            var input = new UpdateProjectInput
+            {
+                Id = "proj-1",
+                Version = 2,
+                Name = "Updated",
+                Status = ProjectStatus.COMPLETE,
+                Description = "Done",
+                Customer = new ProjectCustomerInput { Id = "c1" },
+                Client = new ProjectClientInput { Id = "cl1" },
+                Assignee = new ProjectPersonaInput { Id = "p1" },
+                StartDate = "2026-01-01",
+                DueDate = "2026-12-31",
+                CompletedDate = "2026-06-15",
+                CompletionRate = 100m,
+                Pinned = false,
+                Priority = 9,
+                Type = "Consulting"
+            };
+
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"id\":\"proj-1\""));
+            Assert.IsTrue(json.Contains("\"version\":2"));
+            Assert.IsTrue(json.Contains("\"name\":\"Updated\""));
+            Assert.IsTrue(json.Contains("\"status\":\"COMPLETE\""));
+        }
+
+        [TestMethod]
+        public void Serialize_DeleteProjectInput_WithVersion()
+        {
+            var input = new DeleteProjectInput { Id = "proj-1", Version = 3 };
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"id\":\"proj-1\""));
+            Assert.IsTrue(json.Contains("\"version\":3"));
+        }
+
+        [TestMethod]
+        public void Deserialize_Project_WithAllNestedTypes()
+        {
+            var json = @"{
+                ""id"": ""p1"",
+                ""name"": ""Test"",
+                ""version"": 1,
+                ""client"": { ""id"": ""cl1"", ""displayName"": ""Client Co"" },
+                ""assignee"": { ""id"": ""a1"", ""displayName"": ""John"" },
+                ""completedBy"": { ""id"": ""u1"", ""displayName"": ""Jane"" }
+            }";
+
+            var project = JsonConvert.DeserializeObject<Project>(json, GraphQLClient.JsonSettings);
+
+            Assert.IsNotNull(project);
+            Assert.AreEqual("cl1", project.Client?.Id);
+            Assert.AreEqual("Client Co", project.Client?.DisplayName);
+            Assert.AreEqual("a1", project.Assignee?.Id);
+            Assert.AreEqual("John", project.Assignee?.DisplayName);
+            Assert.AreEqual("u1", project.CompletedBy?.Id);
+            Assert.AreEqual("Jane", project.CompletedBy?.DisplayName);
+        }
+
+        [TestMethod]
+        public void Serialize_ProjectFilter_AllFields()
+        {
+            var filter = new ProjectFilter
+            {
+                Status = new ProjectStatusExpression { EqualsValue = ProjectStatus.OPEN },
+                Customer = new ProjectIdExpression { EqualsValue = "c1" },
+                Id = new ProjectIdExpression { EqualsValue = "p1" },
+                Deleted = true,
+                IncludeTasks = true,
+                Type = new ProjectStringExpression { EqualsValue = "Dev" }
+            };
+
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"equals\":\"OPEN\""));
+            Assert.IsTrue(json.Contains("\"deleted\":true"));
+            Assert.IsTrue(json.Contains("\"includeTasks\":true"));
+        }
+
+        [TestMethod]
+        public void Serialize_ProjectUserInput()
+        {
+            var input = new ProjectUserInput { Id = "u1" };
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+            Assert.IsTrue(json.Contains("\"id\":\"u1\""));
+        }
     }
 }

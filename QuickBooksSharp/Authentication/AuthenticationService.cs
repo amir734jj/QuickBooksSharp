@@ -12,7 +12,7 @@ namespace QuickBooksSharp.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly QuickBooksHttpClient _client = new QuickBooksHttpClient(null, null, new NoRetryRunPolicy());
+        private readonly QuickBooksHttpClient _client = new(null, null, new NoRetryRunPolicy());
 
         //TODO: retrieve the endpoints URLs dynamically
         //See https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-openid-discovery-doc

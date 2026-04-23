@@ -8,7 +8,7 @@ namespace QuickBooksSharp.Policies
     {
         private SemaphoreSlim _semaphore;
 
-        private ConcurrentQueue<TaskCompletionSource<bool>> queue = new ConcurrentQueue<TaskCompletionSource<bool>>();
+        private ConcurrentQueue<TaskCompletionSource<bool>> queue = new();
 
         public int QueueCount => queue.Count;
 
@@ -24,7 +24,9 @@ namespace QuickBooksSharp.Policies
             _semaphore.WaitAsync().ContinueWith(t =>
             {
                 if (queue.TryDequeue(out var popped))
+                {
                     popped.SetResult(true);
+                }
             });
             return tcs.Task;
         }

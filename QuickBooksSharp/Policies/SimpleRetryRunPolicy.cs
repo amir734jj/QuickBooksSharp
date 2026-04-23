@@ -19,7 +19,9 @@ namespace QuickBooksSharp.Policies
                 }
 
                 if (r.Exception != null)
+                {
                     throw r.Exception;
+                }
 
                 return r.Response;
             }

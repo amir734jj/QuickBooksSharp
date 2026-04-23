@@ -11,7 +11,7 @@ namespace QuickBooksSharp.Policies
         //https://developer.intuit.com/app/developer/qbo/docs/learn/rest-api-features#limits-and-throttles
         private const int MAX_CONCURRENT_REQUESTS = 10;
 
-        private ConcurrentDictionary<long, FifoSemaphore> _realmIdToQueue = new ConcurrentDictionary<long, FifoSemaphore>();
+        private ConcurrentDictionary<long, FifoSemaphore> _realmIdToQueue = new();
 
         public int GetQueueCount(long realmId) => _realmIdToQueue[realmId].QueueCount;
 
@@ -48,7 +48,9 @@ namespace QuickBooksSharp.Policies
                 }
 
                 if (r.Exception != null)
+                {
                     throw r.Exception;
+                }
 
                 return r.Response;
             }

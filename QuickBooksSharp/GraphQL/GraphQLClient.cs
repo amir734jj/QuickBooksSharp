@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -20,13 +19,13 @@ namespace QuickBooksSharp.GraphQL
         private readonly IRunPolicy _runPolicy;
         private readonly ILogger _logger;
 
-        public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+        public static readonly JsonSerializerSettings JsonSettings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             Converters = { new StringEnumConverter() }
         };
 
-        private static readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
+        private static readonly HttpClient _httpClient = new(new HttpClientHandler
         {
             AutomaticDecompression = System.Net.DecompressionMethods.GZip
         });
@@ -73,28 +72,24 @@ namespace QuickBooksSharp.GraphQL
 
             var response = await _runPolicy.RunAsync(_realmId, async () =>
             {
-                using (var request = new HttpRequestMessage(HttpMethod.Post, _endpoint)
+                using var request = new HttpRequestMessage(HttpMethod.Post, _endpoint);
+                request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+
+                var httpResponse = await _httpClient.SendAsync(request);
+                var ex = httpResponse.IsSuccessStatusCode ? null : new QuickBooksException(request, httpResponse, await httpResponse.Content.ReadAsStringAsync());
+
+                if (ex?.IsRateLimit == true)
                 {
-                    Content = new StringContent(jsonContent, Encoding.UTF8, "application/json")
-                })
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-
-                    var httpResponse = await _httpClient.SendAsync(request);
-                    var ex = httpResponse.IsSuccessStatusCode ? null : new QuickBooksException(request, httpResponse, await httpResponse.Content.ReadAsStringAsync());
-
-                    if (ex?.IsRateLimit == true)
-                    {
-                        _logger.LogWarning("Rate limit hit for realm {RealmId} on {Uri}", _realmId, request.RequestUri);
-                        RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri!));
-                    }
-                    else if (ex != null)
-                    {
-                        _logger.LogError("GraphQL request failed: {StatusCode} {Reason}", (int)httpResponse.StatusCode, httpResponse.ReasonPhrase);
-                    }
-
-                    return new QuickBooksAPIResponse(httpResponse, ex);
+                    _logger.LogWarning("Rate limit hit for realm {RealmId} on {Uri}", _realmId, request.RequestUri);
+                    RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri!));
                 }
+                else if (ex != null)
+                {
+                    _logger.LogError("GraphQL request failed: {StatusCode} {Reason}", (int)httpResponse.StatusCode, httpResponse.ReasonPhrase);
+                }
+
+                return new QuickBooksAPIResponse(httpResponse, ex);
             });
 
             var responseContent = await response.Content.ReadAsStringAsync();

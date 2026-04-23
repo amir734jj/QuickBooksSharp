@@ -18,13 +18,13 @@ namespace QuickBooksSharp.Infrastructure
         private readonly long? _realmId;
         private IRunPolicy _runPolicy;
 
-        private static HttpClient _httpClient = new HttpClient(new HttpClientHandler
+        private static HttpClient _httpClient = new(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip
         });
 
 
-        public readonly static JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        public readonly static JsonSerializerOptions JsonSerializerOptions = new()
         {
             Converters =
             {
@@ -76,19 +76,21 @@ namespace QuickBooksSharp.Infrastructure
         {
             var response = await this._runPolicy.RunAsync(_realmId, async () =>
             {
-                using (var request = makeRequest())
+                using var request = makeRequest();
+                if (_accessToken != null)
                 {
-                    if (_accessToken != null)
-                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-
-                    var response = await _httpClient.SendAsync(request);
-                    var ex = response.IsSuccessStatusCode ? null : new QuickBooksException(request, response, await response.Content.ReadAsStringAsync());
-
-                    if (ex?.IsRateLimit == true)
-                        RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri));
-
-                    return new QuickBooksAPIResponse(response, ex);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
                 }
+
+                var response = await _httpClient.SendAsync(request);
+                var ex = response.IsSuccessStatusCode ? null : new QuickBooksException(request, response, await response.Content.ReadAsStringAsync());
+
+                if (ex?.IsRateLimit == true)
+                {
+                    RunPolicy.NotifyRateLimt(new RateLimitEvent(_realmId, request.RequestUri));
+                }
+
+                return new QuickBooksAPIResponse(response, ex);
             });
 
             return response;

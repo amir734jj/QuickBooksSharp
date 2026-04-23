@@ -23,15 +23,15 @@ namespace QuickBooksSharp.Tests
                     ShipToAddress = new SalesTaxAddressInput { FreeFormAddressLine = "2700 Coast Ave CA, US 94043" },
                     ShippingFee = new SalesTaxMoneyInput { Value = 10.99m }
                 },
-                LineItems = new[]
-                {
+                LineItems =
+                [
                     new SalesTaxLineItemInput
                     {
                         NumberOfUnits = 1,
                         PricePerUnitExcludingTaxes = new SalesTaxMoneyInput { Value = 100 },
                         ProductVariantTaxability = new SalesTaxProductVariantInput { ProductVariantId = "prod-1" }
                     }
-                }
+                ]
             };
 
             var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
@@ -157,6 +157,57 @@ namespace QuickBooksSharp.Tests
             Assert.IsNotNull(response.Data?.Result?.TaxCalculation);
             Assert.AreEqual("2026-05-15", response.Data.Result.TaxCalculation.TransactionDate);
             Assert.AreEqual(18.25m, response.Data.Result.TaxCalculation.TaxTotals?.TotalTaxAmountExcludingShipping?.Value);
+        }
+
+        [TestMethod]
+        public void Serialize_SalesTaxAddressInput_StructuredFields()
+        {
+            var input = new SalesTaxCalculationInput
+            {
+                TransactionDate = "2026-05-01",
+                Shipping = new SalesTaxShippingInput
+                {
+                    ShipFromAddress = new SalesTaxAddressInput
+                    {
+                        StreetAddressLine1 = "123 Main St",
+                        StreetAddressLine2 = "Suite 100",
+                        City = "San Jose",
+                        StateProvinceCode = "CA",
+                        PostalCode = "95134",
+                        CountryCode = "US"
+                    }
+                },
+                LineItems = new[] { new SalesTaxLineItemInput { NumberOfUnits = 1 } }
+            };
+
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"streetAddressLine1\":\"123 Main St\""));
+            Assert.IsTrue(json.Contains("\"streetAddressLine2\":\"Suite 100\""));
+            Assert.IsTrue(json.Contains("\"city\":\"San Jose\""));
+            Assert.IsTrue(json.Contains("\"stateProvinceCode\":\"CA\""));
+            Assert.IsTrue(json.Contains("\"postalCode\":\"95134\""));
+            Assert.IsTrue(json.Contains("\"countryCode\":\"US\""));
+        }
+
+        [TestMethod]
+        public void Deserialize_SalesTaxAddress_AllFields()
+        {
+            var json = @"{
+                ""streetAddressLine1"": ""123 Main"",
+                ""city"": ""Boston"",
+                ""stateProvinceCode"": ""MA"",
+                ""postalCode"": ""02101"",
+                ""countryCode"": ""US""
+            }";
+
+            var addr = JsonConvert.DeserializeObject<SalesTaxAddress>(json, GraphQLClient.JsonSettings);
+
+            Assert.AreEqual("123 Main", addr!.StreetAddressLine1);
+            Assert.AreEqual("Boston", addr.City);
+            Assert.AreEqual("MA", addr.StateProvinceCode);
+            Assert.AreEqual("02101", addr.PostalCode);
+            Assert.AreEqual("US", addr.CountryCode);
         }
     }
 }

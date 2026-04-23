@@ -185,10 +185,14 @@ namespace QuickBooksSharp.Services
             var url = new Url(_serviceUrl).AppendPathSegment(GetEntityName(typeof(TEntity)));
 
             if (operation != null && operation != OperationEnum.Unspecified)
+            {
                 url = url.SetQueryParam("operation", operation);
+            }
 
             if (include != null && include != OperationEnum.Unspecified)
+            {
                 url = url.SetQueryParam("include", include);
+            }
 
             var res = await _client.PostAsync<IntuitResponse>(url, e);
             return new IntuitResponse<TEntity>
@@ -234,9 +238,13 @@ namespace QuickBooksSharp.Services
         private string GetEntityName(Type t)
         {
             if (t == typeof(CreditCardPaymentTxn))
+            {
                 return "creditcardpayment";
+            }
             else if (t == typeof(TaxService))
+            {
                 return "taxservice/taxcode";
+            }
 
             return t.Name.ToLowerInvariant();
         }

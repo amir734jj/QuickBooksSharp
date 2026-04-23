@@ -10,8 +10,10 @@ namespace QuickBooksSharp.Policies
         {
             var r = await getResponseAsync();
 
-            if (r.Exception != null) 
+            if (r.Exception != null)
+            {
                 throw r.Exception;
+            }
 
             return r.Response;
         }

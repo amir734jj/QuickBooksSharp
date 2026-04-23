@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL;
-using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
 
 namespace QuickBooksSharp.Tests
@@ -83,7 +82,7 @@ namespace QuickBooksSharp.Tests
         [TestMethod]
         public void HasErrors_FalseWhenErrorsEmpty()
         {
-            var response = new GraphQLResponse<ProjectQueryData> { Errors = new GraphQLError[0] };
+            var response = new GraphQLResponse<ProjectQueryData> { Errors = [] };
             Assert.IsFalse(response.HasErrors);
         }
 
@@ -92,9 +91,27 @@ namespace QuickBooksSharp.Tests
         {
             var response = new GraphQLResponse<ProjectQueryData>
             {
-                Errors = new[] { new GraphQLError { Message = "Err" } }
+                Errors = [new GraphQLError { Message = "Err" }]
             };
             Assert.IsTrue(response.HasErrors);
+        }
+
+        [TestMethod]
+        public void Deserialize_ErrorWithPath()
+        {
+            var json = @"{
+                ""data"": null,
+                ""errors"": [{
+                    ""message"": ""Field error"",
+                    ""path"": [""company"", ""transactions"", 0, ""id""]
+                }]
+            }";
+
+            var response = JsonConvert.DeserializeObject<GraphQLResponse<ProjectQueryData>>(json, GraphQLClient.JsonSettings);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNull(response.Errors![0].Path);
+            Assert.AreEqual(4, response.Errors[0].Path!.Length);
         }
     }
 }

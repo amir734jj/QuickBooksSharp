@@ -66,7 +66,10 @@ namespace QuickBooksSharp.CodeGen
             {
                 var parentComplexType = GetParentComplexType(item);
                 if (parentComplexType != null && parentComplexType != complexType)
+                {
                     continue;
+                }
+
                 switch (item)
                 {
                     case XmlSchemaChoice choice:
@@ -146,13 +149,19 @@ namespace QuickBooksSharp.CodeGen
                         XmlSchemaChoice choice => choice.Items.Cast<XmlSchemaObject>().SelectMany(o =>
                         {
                             if (o is XmlSchemaElement e)
-                                return new[] { (Elt: e, IsChoiceChild: true) };
+                            {
+                                return [(Elt: e, IsChoiceChild: true)];
+                            }
                             else if (o is XmlSchemaSequence s)
+                            {
                                 return GetParticlesRec(t, s).Cast<XmlSchemaElement>().Select(e => (Elt: e, IsChoiceChild: true));
+                            }
                             else
+                            {
                                 throw new Exception();
+                            }
                         }),
-                        XmlSchemaElement elt => new[] { (Elt: elt, IsChoiceChild: false) },
+                        XmlSchemaElement elt => [(Elt: elt, IsChoiceChild: false)],
                         _ => throw new Exception()
                     });
                     foreach (var i in elts)
@@ -234,84 +243,102 @@ namespace QuickBooksSharp.CodeGen
 
         private static void GenerateOutFile(string outFilePath, EnumModel[] enums, ClassModel[] classes)
         {
-            using (var writer = new StreamWriter(outFilePath))
+            using var writer = new StreamWriter(outFilePath);
+            writer.WriteLine("using System;");
+            writer.WriteLine("using System.Runtime.Serialization;");
+            writer.WriteLine("using System.Text.Json.Serialization;");
+            writer.WriteLine();
+            writer.WriteLine("namespace QuickBooksSharp.Entities");
+            writer.WriteLine("{");
+
+            foreach (var e in enums)
             {
-                writer.WriteLine("using System;");
-                writer.WriteLine("using System.Runtime.Serialization;");
-                writer.WriteLine("using System.Text.Json.Serialization;");
-                writer.WriteLine();
-                writer.WriteLine("namespace QuickBooksSharp.Entities");
+                writer.WriteLine($"public enum {e.Name}");
                 writer.WriteLine("{");
 
-                foreach (var e in enums)
+                writer.WriteLine($"Unspecified = 0,");
+                foreach (var name in e.Fields)
                 {
-                    writer.WriteLine($"public enum {e.Name}");
-                    writer.WriteLine("{");
-
-                    writer.WriteLine($"Unspecified = 0,");
-                    foreach (var name in e.Fields)
+                    string safeName = GetSafePropertyName(name);
+                    if (name != safeName)
                     {
-                        string safeName = GetSafePropertyName(name);
-                        if (name != safeName)
-                            writer.WriteLine($"[EnumMember(Value = \"{name}\")]");
-                        writer.WriteLine($"{safeName},");
+                        writer.WriteLine($"[EnumMember(Value = \"{name}\")]");
                     }
 
-                    writer.WriteLine("}");
-                }
-
-                foreach (var c in classes)
-                {
-                    writer.Write($"public {(c.IsAbstract ? "abstract" : "")} class {GetSafeClassName(c.Name)}");
-                    if (c.BaseName != null)
-                        writer.Write($" : {c.BaseName}");
-                    writer.WriteLine();
-                    writer.WriteLine("{");
-
-                    foreach (var pty in c.Properties)
-                    {
-                        string safeName = GetSafePropertyName(pty.Name);
-                        if (pty.Name != safeName)
-                            writer.WriteLine($"[JsonPropertyName(\"{pty.Name}\")]");
-
-                        if (c.Name == "BatchItemRequest")
-                            writer.WriteLine(pty.Name == "IntuitObject" ? "[JsonIgnore]" : "[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]");
-
-                        static string GetPropertyDeclaration(PropertyModel pty, string safeName, string typeName)
-                        {
-                            string ptyDecl = string.Empty;
-                            ptyDecl += $"public {typeName}";
-                            if (pty.IsArray)
-                                ptyDecl += "[]";
-                            if (pty.IsNullable)
-                                ptyDecl += "?";
-                            ptyDecl += $" {safeName} ";
-                            ptyDecl += pty.Code ?? "{ get; set; }";
-                            if (!pty.IsNullable && pty.Code == null)
-                                ptyDecl += " = default!; ";
-
-                            return ptyDecl;
-                        }
-                        string typeName = GetSafeClassName(pty.TypeName);
-                        if (typeName != nameof(DateOnly))
-                            writer.WriteLine(GetPropertyDeclaration(pty, safeName, typeName));
-                        else
-                        {
-                            //DateOnly type is only support on .NET6+
-                            writer.WriteLine("#if NET6_0_OR_GREATER");
-                            writer.WriteLine(GetPropertyDeclaration(pty, safeName, typeName));
-                            writer.WriteLine("#else");
-                            writer.WriteLine(GetPropertyDeclaration(pty, safeName, "DateTime"));
-                            writer.WriteLine("#endif");
-                        }
-
-                    }
-
-                    writer.WriteLine("}");
+                    writer.WriteLine($"{safeName},");
                 }
 
                 writer.WriteLine("}");
             }
+
+            foreach (var c in classes)
+            {
+                writer.Write($"public {(c.IsAbstract ? "abstract" : "")} class {GetSafeClassName(c.Name)}");
+                if (c.BaseName != null)
+                {
+                    writer.Write($" : {c.BaseName}");
+                }
+
+                writer.WriteLine();
+                writer.WriteLine("{");
+
+                foreach (var pty in c.Properties)
+                {
+                    string safeName = GetSafePropertyName(pty.Name);
+                    if (pty.Name != safeName)
+                    {
+                        writer.WriteLine($"[JsonPropertyName(\"{pty.Name}\")]");
+                    }
+
+                    if (c.Name == "BatchItemRequest")
+                    {
+                        writer.WriteLine(pty.Name == "IntuitObject" ? "[JsonIgnore]" : "[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]");
+                    }
+
+                    static string GetPropertyDeclaration(PropertyModel pty, string safeName, string typeName)
+                    {
+                        string ptyDecl = string.Empty;
+                        ptyDecl += $"public {typeName}";
+                        if (pty.IsArray)
+                        {
+                            ptyDecl += "[]";
+                        }
+
+                        if (pty.IsNullable)
+                        {
+                            ptyDecl += "?";
+                        }
+
+                        ptyDecl += $" {safeName} ";
+                        ptyDecl += pty.Code ?? "{ get; set; }";
+                        if (!pty.IsNullable && pty.Code == null)
+                        {
+                            ptyDecl += " = default!; ";
+                        }
+
+                        return ptyDecl;
+                    }
+                    string typeName = GetSafeClassName(pty.TypeName);
+                    if (typeName != nameof(DateOnly))
+                    {
+                        writer.WriteLine(GetPropertyDeclaration(pty, safeName, typeName));
+                    }
+                    else
+                    {
+                        //DateOnly type is only support on .NET6+
+                        writer.WriteLine("#if NET6_0_OR_GREATER");
+                        writer.WriteLine(GetPropertyDeclaration(pty, safeName, typeName));
+                        writer.WriteLine("#else");
+                        writer.WriteLine(GetPropertyDeclaration(pty, safeName, "DateTime"));
+                        writer.WriteLine("#endif");
+                    }
+
+                }
+
+                writer.WriteLine("}");
+            }
+
+            writer.WriteLine("}");
         }
 
         private static void FormatOutFile(string outFilePath)
@@ -333,7 +360,9 @@ namespace QuickBooksSharp.CodeGen
         {
             //must escape property names that conflict with keywords
             if (new[] { "void" }.Contains(name))
+            {
                 return $"@{name}";
+            }
 
             return Regex.Replace(name, "[-%)( ]", string.Empty);
         }

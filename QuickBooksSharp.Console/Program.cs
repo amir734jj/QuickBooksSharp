@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Logging;
-using QuickBooksSharp.Authentication;
-using QuickBooksSharp.GraphQL;
+﻿using QuickBooksSharp.Authentication;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
 using Serilog;
@@ -14,17 +12,10 @@ Log.Logger = new LoggerConfiguration()
 var loggerFactory = new SerilogLoggerFactory(Log.Logger);
 var logger = loggerFactory.CreateLogger("QuickBooksSharp");
 
-// ────────────────────────────────────────────────────────────────────
-
-string GetEnv(string name) =>
-    Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User)
-    ?? Environment.GetEnvironmentVariable(name)
-    ?? throw new Exception($"Environment variable {name} is not defined");
-
-var clientId = GetEnv("QUICKBOOKS_SHARP_CLIENT_ID");
-var clientSecret = GetEnv("QUICKBOOKS_SHARP_CLIENT_SECRET");
-var refreshToken = GetEnv("QUICKBOOKS_SHARP_REFRESH_TOKEN");
-var realmId = long.Parse(GetEnv("QUICKBOOKS_SHARP_REALMID"));
+var clientId = Environment.GetEnvironmentVariable("QUICKBOOKS_SHARP_CLIENT_ID")!;
+var clientSecret = Environment.GetEnvironmentVariable("QUICKBOOKS_SHARP_CLIENT_SECRET")!;
+var refreshToken = Environment.GetEnvironmentVariable("QUICKBOOKS_SHARP_REFRESH_TOKEN")!;
+var realmId = long.Parse(Environment.GetEnvironmentVariable("QUICKBOOKS_SHARP_REALMID")!);
 var useSandbox = true;
 
 Console.WriteLine("Refreshing access token...");
@@ -99,14 +90,14 @@ try
     {
         TransactionDate = DateTime.Today.ToString("yyyy-MM-dd"),
         Subject = new SalesTaxSubjectInput { QbCustomerId = "1" },
-        LineItems = new[]
-        {
+        LineItems =
+        [
             new SalesTaxLineItemInput
             {
                 NumberOfUnits = 1,
                 PricePerUnitExcludingTaxes = new SalesTaxMoneyInput { Value = 100.00m }
             }
-        }
+        ]
     });
 
     if (taxResult.HasErrors)

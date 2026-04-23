@@ -139,5 +139,70 @@ namespace QuickBooksSharp.Tests
             Assert.AreEqual(1, response.Data.DimensionDefinitions.Edges!.Length);
             Assert.AreEqual("Location", response.Data.DimensionDefinitions.Edges[0].Node!.Label);
         }
+
+        [TestMethod]
+        public void Serialize_DimensionValueUpdateInput()
+        {
+            var input = new DimensionValueUpdateInput
+            {
+                Id = "dv-1",
+                DimensionDefinitionId = "dim-1",
+                Value = "Updated",
+                EntityVersion = 2
+            };
+
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"id\":\"dv-1\""));
+            Assert.IsTrue(json.Contains("\"dimensionDefinitionId\":\"dim-1\""));
+            Assert.IsTrue(json.Contains("\"value\":\"Updated\""));
+            Assert.IsTrue(json.Contains("\"entityVersion\":2"));
+        }
+
+        [TestMethod]
+        public void Serialize_DimensionValueDisableInput()
+        {
+            var input = new DimensionValueDisableInput
+            {
+                Id = "dv-1",
+                DimensionDefinitionId = "dim-1",
+                EntityVersion = 3
+            };
+
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
+
+            Assert.IsTrue(json.Contains("\"id\":\"dv-1\""));
+            Assert.IsTrue(json.Contains("\"entityVersion\":3"));
+        }
+
+        [TestMethod]
+        public void Serialize_DimensionDefinitionsFilter()
+        {
+            var filter = new DimensionDefinitionsFilter { EntityType = "INVOICE" };
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
+            Assert.IsTrue(json.Contains("\"entityType\":\"INVOICE\""));
+        }
+
+        [TestMethod]
+        public void Deserialize_DimensionDefinition_WithRequired()
+        {
+            var json = @"{ ""id"": ""d1"", ""label"": ""Test"", ""dataType"": ""STRING"", ""required"": true, ""associations"": [] }";
+            var def = JsonConvert.DeserializeObject<DimensionDefinition>(json, GraphQLClient.JsonSettings);
+            Assert.AreEqual(true, def!.Required);
+        }
+
+        [TestMethod]
+        public void Deserialize_DimensionValuesConnection()
+        {
+            var json = @"{
+                ""edges"": [{ ""node"": { ""id"": ""dv-1"", ""value"": ""Val"", ""active"": true, ""entityVersion"": 1 }, ""cursor"": ""c1"" }],
+                ""pageInfo"": { ""hasNextPage"": false, ""hasPreviousPage"": false }
+            }";
+
+            var conn = JsonConvert.DeserializeObject<DimensionValuesConnection>(json, GraphQLClient.JsonSettings);
+            Assert.IsNotNull(conn);
+            Assert.AreEqual(1, conn.Edges!.Length);
+            Assert.AreEqual("Val", conn.Edges[0].Node!.Value);
+        }
     }
 }
