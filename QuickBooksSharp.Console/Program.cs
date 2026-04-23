@@ -6,7 +6,6 @@ using QuickBooksSharp.GraphQL.Services;
 using Serilog;
 using Serilog.Extensions.Logging;
 
-// ── Serilog setup ──────────────────────────────────────────────────
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
@@ -15,12 +14,6 @@ Log.Logger = new LoggerConfiguration()
 var loggerFactory = new SerilogLoggerFactory(Log.Logger);
 var logger = loggerFactory.CreateLogger("QuickBooksSharp");
 
-// ── Configuration ──────────────────────────────────────────────────
-// Set these environment variables before running:
-//   QUICKBOOKS_SHARP_CLIENT_ID
-//   QUICKBOOKS_SHARP_CLIENT_SECRET
-//   QUICKBOOKS_SHARP_REFRESH_TOKEN
-//   QUICKBOOKS_SHARP_REALMID
 // ────────────────────────────────────────────────────────────────────
 
 string GetEnv(string name) =>
@@ -34,14 +27,12 @@ var refreshToken = GetEnv("QUICKBOOKS_SHARP_REFRESH_TOKEN");
 var realmId = long.Parse(GetEnv("QUICKBOOKS_SHARP_REALMID"));
 var useSandbox = true;
 
-// ── Get access token ───────────────────────────────────────────────
 Console.WriteLine("Refreshing access token...");
 var authService = new AuthenticationService();
 var tokenResponse = await authService.RefreshOAuthTokenAsync(clientId, clientSecret, refreshToken);
 var accessToken = tokenResponse.access_token;
 Console.WriteLine($"Access token obtained (expires in {tokenResponse.expires_in}s)");
 
-// ── Test Projects API ──────────────────────────────────────────────
 Console.WriteLine("\n=== Projects API ===");
 try
 {
@@ -71,7 +62,6 @@ catch (Exception ex)
     Console.WriteLine($"Projects API error: {ex.Message}");
 }
 
-// ── Test Custom Fields API ─────────────────────────────────────────
 Console.WriteLine("\n=== Custom Fields API ===");
 try
 {
@@ -101,7 +91,6 @@ catch (Exception ex)
     Console.WriteLine($"Custom Fields API error: {ex.Message}");
 }
 
-// ── Test Sales Tax API ─────────────────────────────────────────────
 Console.WriteLine("\n=== Sales Tax API ===");
 try
 {
@@ -135,7 +124,6 @@ catch (Exception ex)
     Console.WriteLine($"Sales Tax API error: {ex.Message}");
 }
 
-// ── Test Dimensions API ────────────────────────────────────────────
 Console.WriteLine("\n=== Dimensions API ===");
 try
 {

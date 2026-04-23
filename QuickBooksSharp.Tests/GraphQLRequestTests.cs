@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL;
 
 namespace QuickBooksSharp.Tests
@@ -15,7 +16,7 @@ namespace QuickBooksSharp.Tests
                 Query = "{ company { id } }"
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var json = JsonConvert.SerializeObject(request, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"query\":\"{ company { id } }\""));
             Assert.IsFalse(json.Contains("\"operationName\""));
@@ -32,7 +33,7 @@ namespace QuickBooksSharp.Tests
                 Variables = new { id = "123" }
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var json = JsonConvert.SerializeObject(request, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"operationName\":\"GetProject\""));
             Assert.IsTrue(json.Contains("\"variables\""));
@@ -49,7 +50,7 @@ namespace QuickBooksSharp.Tests
                 Variables = null
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(request);
+            var json = JsonConvert.SerializeObject(request, GraphQLClient.JsonSettings);
 
             Assert.IsFalse(json.Contains("operationName"));
             Assert.IsFalse(json.Contains("variables"));

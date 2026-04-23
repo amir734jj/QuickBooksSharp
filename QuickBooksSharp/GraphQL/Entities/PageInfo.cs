@@ -1,12 +1,7 @@
 using Newtonsoft.Json;
 
 namespace QuickBooksSharp.GraphQL.Entities
-{
-    /// <summary>
-    /// Relay-spec compliant PageInfo.
-    /// See: https://relay.dev/graphql/connections.htm
-    /// </summary>
-    public class PageInfo
+{    public class PageInfo
     {
         [JsonProperty("hasNextPage")]
         public bool HasNextPage { get; set; }

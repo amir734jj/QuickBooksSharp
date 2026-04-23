@@ -104,10 +104,9 @@ namespace QuickBooksSharp.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(System.InvalidOperationException))]
         public void Load_NonExistentResource_Throws()
         {
-            GraphQLQueryLoader.Load("NonExistentQuery");
+            Assert.ThrowsExactly<System.InvalidOperationException>(() => GraphQLQueryLoader.Load("NonExistentQuery"));
         }
     }
 }

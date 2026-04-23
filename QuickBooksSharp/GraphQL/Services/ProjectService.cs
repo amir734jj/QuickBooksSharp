@@ -34,13 +34,7 @@ namespace QuickBooksSharp.GraphQL.Services
     {
         [JsonProperty("projectManagementDeleteProject")]
         public ProjectMutationResult? Result { get; set; }
-    }
-
-    /// <summary>
-    /// Union type: ProjectManagement_ProjectResponse = ProjectManagement_Project | ProjectManagement_Error
-    /// Deserialize by checking which fields are populated.
-    /// </summary>
-    public class ProjectMutationResult
+    }    public class ProjectMutationResult
     {
         [JsonProperty("id")]
         public string? Id { get; set; }

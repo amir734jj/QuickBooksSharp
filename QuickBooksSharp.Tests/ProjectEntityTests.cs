@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
@@ -32,7 +33,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var project = Newtonsoft.Json.JsonConvert.DeserializeObject<Project>(json);
+            var project = JsonConvert.DeserializeObject<Project>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(project);
             Assert.AreEqual("djQ6123", project.Id);
@@ -56,33 +57,33 @@ namespace QuickBooksSharp.Tests
         [TestMethod]
         public void Serialize_ProjectStatus_AllValues()
         {
-            Assert.AreEqual("\"OPEN\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.OPEN));
-            Assert.AreEqual("\"IN_PROGRESS\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.IN_PROGRESS));
-            Assert.AreEqual("\"BLOCKED\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.BLOCKED));
-            Assert.AreEqual("\"CANCELED\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.CANCELED));
-            Assert.AreEqual("\"COMPLETE\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.COMPLETE));
-            Assert.AreEqual("\"OTHER\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.OTHER));
-            Assert.AreEqual("\"WAITING_ON_CLIENT\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectStatus.WAITING_ON_CLIENT));
+            Assert.AreEqual("\"OPEN\"", JsonConvert.SerializeObject(ProjectStatus.OPEN, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"IN_PROGRESS\"", JsonConvert.SerializeObject(ProjectStatus.IN_PROGRESS, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"BLOCKED\"", JsonConvert.SerializeObject(ProjectStatus.BLOCKED, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"CANCELED\"", JsonConvert.SerializeObject(ProjectStatus.CANCELED, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"COMPLETE\"", JsonConvert.SerializeObject(ProjectStatus.COMPLETE, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"OTHER\"", JsonConvert.SerializeObject(ProjectStatus.OTHER, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"WAITING_ON_CLIENT\"", JsonConvert.SerializeObject(ProjectStatus.WAITING_ON_CLIENT, GraphQLClient.JsonSettings));
         }
 
         [TestMethod]
         public void Deserialize_ProjectStatus_AllValues()
         {
-            Assert.AreEqual(ProjectStatus.OPEN, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"OPEN\""));
-            Assert.AreEqual(ProjectStatus.IN_PROGRESS, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"IN_PROGRESS\""));
-            Assert.AreEqual(ProjectStatus.BLOCKED, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"BLOCKED\""));
-            Assert.AreEqual(ProjectStatus.CANCELED, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"CANCELED\""));
-            Assert.AreEqual(ProjectStatus.COMPLETE, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"COMPLETE\""));
-            Assert.AreEqual(ProjectStatus.OTHER, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"OTHER\""));
-            Assert.AreEqual(ProjectStatus.WAITING_ON_CLIENT, Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectStatus>("\"WAITING_ON_CLIENT\""));
+            Assert.AreEqual(ProjectStatus.OPEN, JsonConvert.DeserializeObject<ProjectStatus>("\"OPEN\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.IN_PROGRESS, JsonConvert.DeserializeObject<ProjectStatus>("\"IN_PROGRESS\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.BLOCKED, JsonConvert.DeserializeObject<ProjectStatus>("\"BLOCKED\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.CANCELED, JsonConvert.DeserializeObject<ProjectStatus>("\"CANCELED\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.COMPLETE, JsonConvert.DeserializeObject<ProjectStatus>("\"COMPLETE\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.OTHER, JsonConvert.DeserializeObject<ProjectStatus>("\"OTHER\"", GraphQLClient.JsonSettings));
+            Assert.AreEqual(ProjectStatus.WAITING_ON_CLIENT, JsonConvert.DeserializeObject<ProjectStatus>("\"WAITING_ON_CLIENT\"", GraphQLClient.JsonSettings));
         }
 
         [TestMethod]
         public void Serialize_ProjectOrderBy()
         {
-            Assert.AreEqual("\"NAME_ASC\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectOrderBy.NAME_ASC));
-            Assert.AreEqual("\"DUE_DATE_DESC\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectOrderBy.DUE_DATE_DESC));
-            Assert.AreEqual("\"STATUS_ASC\"", Newtonsoft.Json.JsonConvert.SerializeObject(ProjectOrderBy.STATUS_ASC));
+            Assert.AreEqual("\"NAME_ASC\"", JsonConvert.SerializeObject(ProjectOrderBy.NAME_ASC, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"DUE_DATE_DESC\"", JsonConvert.SerializeObject(ProjectOrderBy.DUE_DATE_DESC, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"STATUS_ASC\"", JsonConvert.SerializeObject(ProjectOrderBy.STATUS_ASC, GraphQLClient.JsonSettings));
         }
 
         [TestMethod]
@@ -98,7 +99,7 @@ namespace QuickBooksSharp.Tests
                 Priority = 5
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"name\":\"New Project\""));
             Assert.IsTrue(json.Contains("\"description\":\"Description\""));
@@ -116,7 +117,7 @@ namespace QuickBooksSharp.Tests
                 Name = "Minimal Project"
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"name\":\"Minimal Project\""));
             Assert.IsFalse(json.Contains("\"description\""));
@@ -130,7 +131,7 @@ namespace QuickBooksSharp.Tests
         {
             var input = new DeleteProjectInput { Id = "proj-1", Version = 5 };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(input);
+            var json = JsonConvert.SerializeObject(input, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"id\":\"proj-1\""));
             Assert.IsTrue(json.Contains("\"version\":5"));
@@ -145,7 +146,7 @@ namespace QuickBooksSharp.Tests
                 Deleted = false
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"equals\":\"COMPLETE\""));
             Assert.IsTrue(json.Contains("\"deleted\":false"));
@@ -173,7 +174,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var connection = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectConnection>(json);
+            var connection = JsonConvert.DeserializeObject<ProjectConnection>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(connection);
             Assert.AreEqual(2, connection.Edges!.Length);
@@ -194,7 +195,7 @@ namespace QuickBooksSharp.Tests
         {
             var json = @"{ ""id"": ""p1"", ""name"": ""Created"", ""version"": 1, ""status"": ""OPEN"" }";
 
-            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectMutationResult>(json);
+            var result = JsonConvert.DeserializeObject<ProjectMutationResult>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.IsError);
@@ -207,7 +208,7 @@ namespace QuickBooksSharp.Tests
         {
             var json = @"{ ""message"": ""Project not found"", ""classification"": ""NOT_FOUND"" }";
 
-            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectMutationResult>(json);
+            var result = JsonConvert.DeserializeObject<ProjectMutationResult>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.IsError);
@@ -237,7 +238,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<ProjectsQueryData>>(json);
+            var response = JsonConvert.DeserializeObject<GraphQLResponse<ProjectsQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);

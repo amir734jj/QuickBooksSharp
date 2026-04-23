@@ -6,10 +6,6 @@ namespace QuickBooksSharp.GraphQL.Services
     public interface IPayrollCompensationService
     {
         /// <summary>
-        /// Get compensations such as Overtime, Vacation Pay, etc. for a given employee.
-        /// Not available in sandbox - must use production keys.
-        /// Scope required: payroll.compensation.read
-        /// </summary>
-        Task<GraphQLResponse<EmployeeCompensationsQueryData>> GetEmployeeCompensationsAsync(EmployeeCompensationsFilter filter, int? first = null, string? after = null, string? customQuery = null);
+        /// Get compensations such as Overtime, Vacation Pay, etc. for a given employee.        Task<GraphQLResponse<EmployeeCompensationsQueryData>> GetEmployeeCompensationsAsync(EmployeeCompensationsFilter filter, int? first = null, string? after = null, string? customQuery = null);
     }
 }

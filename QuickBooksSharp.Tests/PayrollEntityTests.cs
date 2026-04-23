@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using QuickBooksSharp.GraphQL;
 using QuickBooksSharp.GraphQL.Entities;
 using QuickBooksSharp.GraphQL.Services;
@@ -12,13 +13,13 @@ namespace QuickBooksSharp.Tests
         [TestMethod]
         public void Serialize_PayrollPayUnit_AllValues()
         {
-            Assert.AreEqual("\"HOURLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.HOURLY));
-            Assert.AreEqual("\"WEEKLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.WEEKLY));
-            Assert.AreEqual("\"BIWEEKLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.BIWEEKLY));
-            Assert.AreEqual("\"SEMIMONTHLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.SEMIMONTHLY));
-            Assert.AreEqual("\"MONTHLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.MONTHLY));
-            Assert.AreEqual("\"ANNUALLY\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.ANNUALLY));
-            Assert.AreEqual("\"FLAT\"", Newtonsoft.Json.JsonConvert.SerializeObject(PayrollPayUnit.FLAT));
+            Assert.AreEqual("\"HOURLY\"", JsonConvert.SerializeObject(PayrollPayUnit.HOURLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"WEEKLY\"", JsonConvert.SerializeObject(PayrollPayUnit.WEEKLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"BIWEEKLY\"", JsonConvert.SerializeObject(PayrollPayUnit.BIWEEKLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"SEMIMONTHLY\"", JsonConvert.SerializeObject(PayrollPayUnit.SEMIMONTHLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"MONTHLY\"", JsonConvert.SerializeObject(PayrollPayUnit.MONTHLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"ANNUALLY\"", JsonConvert.SerializeObject(PayrollPayUnit.ANNUALLY, GraphQLClient.JsonSettings));
+            Assert.AreEqual("\"FLAT\"", JsonConvert.SerializeObject(PayrollPayUnit.FLAT, GraphQLClient.JsonSettings));
         }
 
         [TestMethod]
@@ -43,7 +44,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var comp = Newtonsoft.Json.JsonConvert.DeserializeObject<EmployeeCompensation>(json);
+            var comp = JsonConvert.DeserializeObject<EmployeeCompensation>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(comp);
             Assert.AreEqual("comp-1", comp.Id);
@@ -71,7 +72,7 @@ namespace QuickBooksSharp.Tests
                 Active = true
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"employeeId\":\"emp-123\""));
             Assert.IsTrue(json.Contains("\"active\":true"));
@@ -86,7 +87,7 @@ namespace QuickBooksSharp.Tests
                 EmployeeId = "emp-1"
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(filter);
+            var json = JsonConvert.SerializeObject(filter, GraphQLClient.JsonSettings);
 
             Assert.IsTrue(json.Contains("\"employeeId\":\"emp-1\""));
             Assert.IsFalse(json.Contains("\"active\""));
@@ -120,7 +121,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var conn = Newtonsoft.Json.JsonConvert.DeserializeObject<EmployeeCompensationConnection>(json);
+            var conn = JsonConvert.DeserializeObject<EmployeeCompensationConnection>(json, GraphQLClient.JsonSettings);
 
             Assert.IsNotNull(conn);
             Assert.AreEqual(1, conn.Edges!.Length);
@@ -161,7 +162,7 @@ namespace QuickBooksSharp.Tests
                 }
             }";
 
-            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<GraphQLResponse<EmployeeCompensationsQueryData>>(json);
+            var response = JsonConvert.DeserializeObject<GraphQLResponse<EmployeeCompensationsQueryData>>(json);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.HasErrors);

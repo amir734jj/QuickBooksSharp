@@ -33,8 +33,6 @@ namespace QuickBooksSharp.GraphQL
 
         static GraphQLClient()
         {
-            JsonConvert.DefaultSettings = () => JsonSettings;
-
             _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(nameof(QuickBooksSharp), typeof(GraphQLClient).Assembly.GetName().Version!.ToString()));
             _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("(github.com/better-reports/QuickBooksSharp)"));
             _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
@@ -69,7 +67,7 @@ namespace QuickBooksSharp.GraphQL
                 OperationName = operationName
             };
 
-            var jsonContent = JsonConvert.SerializeObject(graphQLRequest);
+            var jsonContent = JsonConvert.SerializeObject(graphQLRequest, JsonSettings);
 
             _logger.LogDebug("GraphQL {Operation} to {Endpoint}", operationName ?? "(unnamed)", _endpoint);
 
@@ -100,7 +98,7 @@ namespace QuickBooksSharp.GraphQL
             });
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<GraphQLResponse<TData>>(responseContent);
+            var result = JsonConvert.DeserializeObject<GraphQLResponse<TData>>(responseContent, JsonSettings);
 
             if (result?.HasErrors == true)
             {
