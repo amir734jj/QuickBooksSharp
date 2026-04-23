@@ -186,3 +186,107 @@ public async Task<IActionResult> Webhook()
     var invoiceId = "1023";
     var invoidePdfStream = await dataService.GetInvoicePDF(invoiceId);
 ```
+
+## Premium APIs (GraphQL)
+
+Premium APIs use GraphQL and require Silver+ tier in the Intuit App Partner Program.
+
+### Projects
+```csharp
+var projectService = new ProjectService(accessToken, realmId, useSandbox: true);
+
+// List projects
+var result = await projectService.GetProjectsAsync(first: 10);
+var projects = result.Data?.Projects?.Edges;
+
+// Get single project
+var project = await projectService.GetProjectAsync("project-id");
+
+// Create
+var created = await projectService.CreateProjectAsync(new CreateProjectInput
+{
+    Name = "Website Redesign",
+    Customer = new ProjectCustomerInput { Id = "customer-id" },
+    Status = ProjectStatus.OPEN
+});
+
+// Update
+await projectService.UpdateProjectAsync(new UpdateProjectInput
+{
+    Id = "project-id",
+    Version = 1,
+    Status = ProjectStatus.COMPLETE
+});
+
+// Delete
+await projectService.DeleteProjectAsync(new DeleteProjectInput { Id = "project-id" });
+```
+
+### Custom Fields
+```csharp
+var cfService = new CustomFieldService(accessToken, realmId, useSandbox: true);
+
+// List definitions
+var defs = await cfService.GetCustomFieldDefinitionsAsync(first: 10);
+
+// Create definition
+await cfService.CreateCustomFieldDefinitionAsync(new CustomFieldDefinitionCreateInput
+{
+    Label = "Region",
+    DataType = CustomFieldDataType.STRING,
+    Associations = new[] { new CustomFieldAssociationInput { EntityType = "INVOICE" } }
+});
+
+// Read entities with >3 custom fields via REST
+var customers = await dataService.QueryWithCustomFieldsAsync<Customer>("SELECT * FROM Customer");
+```
+
+### Sales Tax
+```csharp
+var taxService = new SalesTaxService(accessToken, realmId, useSandbox: true);
+
+var result = await taxService.CalculateSalesTaxAsync(new SalesTaxCalculationInput
+{
+    TransactionDate = "2026-05-15",
+    Subject = new SalesTaxSubjectInput { QbCustomerId = "1" },
+    LineItems = new[]
+    {
+        new SalesTaxLineItemInput
+        {
+            NumberOfUnits = 1,
+            PricePerUnitExcludingTaxes = new SalesTaxMoneyInput { Value = 100.00m }
+        }
+    }
+});
+var totalTax = result.Data?.Result?.TaxCalculation?.TaxTotals?.TotalTaxAmountExcludingShipping?.Value;
+```
+
+### Dimensions (Intuit Enterprise Suite)
+```csharp
+var dimService = new DimensionService(accessToken, realmId, useSandbox: true);
+
+var defs = await dimService.GetDimensionDefinitionsAsync(first: 10);
+var values = await dimService.GetDimensionValuesAsync(new DimensionValuesFilter { DimensionDefinitionId = "dim-id" });
+```
+
+### Payroll Compensation
+```csharp
+var payrollService = new PayrollCompensationService(accessToken, realmId, useSandbox: false);
+
+var comps = await payrollService.GetEmployeeCompensationsAsync(
+    new EmployeeCompensationsFilter { EmployeeId = "emp-id" });
+```
+
+### Custom queries
+
+All service methods accept a `customQuery` parameter to override the default embedded `.graphql` query:
+
+```csharp
+var result = await projectService.GetProjectAsync("id", customQuery: @"
+    query GetProject($id: ID!) {
+        projectManagementProject(id: $id) {
+            id
+            name
+        }
+    }");
+```
