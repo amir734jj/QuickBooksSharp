@@ -3,10 +3,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Flurl;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using QuickBooksSharp.Policies;
 
 namespace QuickBooksSharp.Infrastructure
@@ -18,17 +18,10 @@ namespace QuickBooksSharp.Infrastructure
             AutomaticDecompression = DecompressionMethods.GZip
         });
 
-
-        public readonly static JsonSerializerOptions JsonSerializerOptions = new()
+        public static readonly JsonSerializerSettings JsonSettings = new()
         {
-            Converters =
-            {
-                //new JsonStringEnumConverter(),
-
-                //using community package to fix https://github.com/dotnet/runtime/issues/31081
-                //can revert to out of the box converter once fix (.net 6?)
-                new JsonStringEnumMemberConverter()
-            }
+            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+            Converters = { new StringEnumConverter() }
         };
 
         static QuickBooksHttpClient()
@@ -49,7 +42,7 @@ namespace QuickBooksSharp.Infrastructure
         {
             Func<HttpRequestMessage> makeRequest = () => new HttpRequestMessage(HttpMethod.Post, url)
             {
-                Content = new StringContent(JsonSerializer.Serialize(content, JsonSerializerOptions), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(content, JsonSettings), Encoding.UTF8, "application/json")
             };
             return await this.SendAsync<TResponse>(makeRequest);
         }
@@ -57,7 +50,8 @@ namespace QuickBooksSharp.Infrastructure
         public async Task<TResponse> SendAsync<TResponse>(Func<HttpRequestMessage> makeRequest)
         {
             var response = await this.SendAsync(makeRequest);
-            return (await response.Content.ReadFromJsonAsync<TResponse>(JsonSerializerOptions))!;
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TResponse>(content, JsonSettings)!;
         }
 
         public async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> makeRequest)

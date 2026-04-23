@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.Webhooks
 {
@@ -13,7 +13,7 @@ namespace QuickBooksSharp.Webhooks
     /// </remarks>
     public class WebhookEvent
     {
-        [JsonPropertyName("eventNotifications")]
+        [JsonProperty("eventNotifications")]
         public EventNotification[] EventNotifications { get; set; } = default!;
     }
 }

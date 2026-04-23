@@ -1,4 +1,4 @@
-﻿namespace QuickBooksSharp.Webhooks
+namespace QuickBooksSharp.Webhooks
 {
     /// <summary>
     /// Supported API entities

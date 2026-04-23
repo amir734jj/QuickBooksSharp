@@ -1,10 +1,10 @@
-﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.Webhooks
 {
     public class DataChangeEvent
     {
-        [JsonPropertyName("entities")]
+        [JsonProperty("entities")]
         public EntityChange[] Entities { get; set; } = default!;
     }
 }

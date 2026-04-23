@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Text.Json;
+using Newtonsoft.Json;
 using QuickBooksSharp.Infrastructure;
 using QuickBooksSharp.Webhooks;
 
@@ -44,7 +44,7 @@ namespace QuickBooksSharp.Tests
         [TestMethod]
         public void ShouldDeserializeValidJson()
         {
-            WebhookEvent notification = JsonSerializer.Deserialize<WebhookEvent>(_validNotification, QuickBooksHttpClient.JsonSerializerOptions);
+            WebhookEvent notification = JsonConvert.DeserializeObject<WebhookEvent>(_validNotification, QuickBooksHttpClient.JsonSettings);
 
             Assert.IsNotNull(notification);
             Assert.IsNotNull(notification.EventNotifications);

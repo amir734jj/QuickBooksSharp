@@ -177,7 +177,7 @@ public async Task<IActionResult> Webhook()
         //return HTTP error status
 
     //Process webhook
-    WebhookEvent notification = JsonSerializer.Deserialize<WebhookEvent>(requestBodyJSON, QuickBooksHttpClient.JsonSerializerOptions);
+    WebhookEvent notification = JsonConvert.DeserializeObject<WebhookEvent>(requestBodyJSON, QuickBooksHttpClient.JsonSettings);
 }
 ```
 

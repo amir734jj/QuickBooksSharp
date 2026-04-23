@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Flurl;
 using QuickBooksSharp.Infrastructure;
@@ -87,7 +87,7 @@ namespace QuickBooksSharp.Authentication
             {
                 var request = new HttpRequestMessage(HttpMethod.Post, REVOKE_TOKEN_ENDPOINT_URL)
                 {
-                    Content = new StringContent(JsonSerializer.Serialize(new { token = tokenOrRefreshToken }), Encoding.UTF8, "application/json")
+                    Content = new StringContent(JsonConvert.SerializeObject(new { token = tokenOrRefreshToken }), Encoding.UTF8, "application/json")
                 };
                 this.AddAuthenticationHeader(request, clientId, clientSecret);
                 return request;

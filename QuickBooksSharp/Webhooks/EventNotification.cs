@@ -1,12 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.Webhooks
 {
     public class EventNotification
     {
-        [JsonPropertyName("realmId")]
+        [JsonProperty("realmId")]
         public string RealmId { get; set; } = default!;
-        [JsonPropertyName("dataChangeEvent")]
+        [JsonProperty("dataChangeEvent")]
         public DataChangeEvent DataChangeEvent { get; set; } = default!;
     }
 }

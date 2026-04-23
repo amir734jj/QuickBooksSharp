@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace QuickBooksSharp.Infrastructure
 {
     public class NumberTimespanConverter : JsonConverter<TimeSpan>
     {
-        public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            return TimeSpan.FromSeconds(reader.GetInt32());
+            return TimeSpan.FromSeconds(Convert.ToInt32(reader.Value));
         }
 
-        public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
         {
-            writer.WriteNumberValue((int)value.TotalSeconds);
+            writer.WriteValue((int)value.TotalSeconds);
         }
     }
 }
